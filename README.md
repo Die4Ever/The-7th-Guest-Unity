@@ -8,4 +8,7 @@ ffmpeg -i "f6_1.avi" -b:a 256k -b:v 20M -filter_complex "[0:v]minterpolate='fps=
 feel free to suggest a better method if you know one
 
 http://wiki.xentax.com/index.php/The_7th_Guest_Toolset
+
 http://wiki.xentax.com/index.php/The_7th_Guest_VDX
+
+http://www.mirsoft.info/gmb/music_info.php?id_ele=MTI3NQ==
