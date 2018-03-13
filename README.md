@@ -17,3 +17,4 @@ Also need to test out Waifu2x upscaler
 
 https://github.com/dthpham/butterflow/blob/master/docs/Example-Usage.md
 
+https://github.com/dthpham/butterflow/tree/master/docs
