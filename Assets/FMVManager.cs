@@ -22,52 +22,60 @@ public class FMVManager : MonoBehaviour
 
     Queue<Command> playlist = new Queue<Command>();
     Command currentCommand = null;
-    string path = "file://D:/t7g/upscaled2/";
+    string path = "";
 
+    /*void DialogWindow(int windowID) { }
+    private void OnGUI()
+    {
+        var w = GUI.Window(0, new Rect(0, 0, 1000, 200), DialogWindow, Application.dataPath);
+    }*/
     // Use this for initialization
     void Start()
     {
+        path = "file://" + Application.dataPath + "/../upscaled/";
+        Debug.Log(Application.dataPath);
+        Debug.Log(Application.streamingAssetsPath);
         Application.runInBackground = true;
         Debug.Log("test");
         //vp.url = "file://D:/t7g/upscaled/deband-f1_.avi";
-        QueueSong("track1.ogg");
-        QueueVideoFade("vlogo.avi", 5, 5, 1);
-        QueueVideoFade("tripro.avi");
+        QueueSong("../oggs/track1.ogg");
+        QueueVideoFade("HDISK/vlogo.avi", 1, 5, 1);
+        QueueVideoFade("HDISK/tripro.avi");
         playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 5 });
-        QueueVideoFade("title.avi", 1.0f, 0.0f, 0.5f);
+        QueueVideoFade("HDISK/title.avi", 1.0f, 0.0f, 0.5f);
 
-        QueueVideo("o1pa.avi");
-        QueueVideo("o1tu.avi");
-        QueueVideo("o3pa.avi");
-        QueueVideo("o3tu.avi");
-        QueueVideo("o4pa.avi");
-        QueueVideo("o4tu.avi");
-        QueueVideo("o5pa.avi");
-        QueueVideo("o5tu.avi");
-        QueueVideo("o6pa.avi");
-        QueueVideo("o6tu.avi");
-        QueueVideo("o7pa.avi");
-        QueueVideo("o7tu.avi");
-        QueueVideo("o8pa.avi");
-        QueueVideo("o8tu.avi");
-        QueueVideo("o9pa.avi");
-        QueueVideo("o9tu.avi");
-        QueueVideo("o10pa.avi");
-        QueueVideo("o10tu.avi");
-        QueueVideo("o12pa.avi");
-        QueueVideo("l_in.avi");
-        QueueVideo("f_5ba.avi");
-        QueueVideo("f5_1.avi");
-        QueueVideo("f1_.avi");
-        QueueVideo("f_1fa.avi");
-        QueueVideo("f_1fb.avi");
-        QueueSong("1_e_1.wav");
+        QueueVideo("INTRO/o1pa.avi");
+        QueueVideo("INTRO/o1tu.avi");
+        QueueVideo("INTRO/o3pa.avi");
+        QueueVideo("INTRO/o3tu.avi");
+        QueueVideo("INTRO/o4pa.avi");
+        QueueVideo("INTRO/o4tu.avi");
+        QueueVideo("INTRO/o5pa.avi");
+        QueueVideo("INTRO/o5tu.avi");
+        QueueVideo("INTRO/o6pa.avi");
+        QueueVideo("INTRO/o6tu.avi");
+        QueueVideo("INTRO/o7pa.avi");
+        QueueVideo("INTRO/o7tu.avi");
+        QueueVideo("INTRO/o8pa.avi");
+        QueueVideo("INTRO/o8tu.avi");
+        QueueVideo("INTRO/o9pa.avi");
+        QueueVideo("INTRO/o9tu.avi");
+        QueueVideo("INTRO/o10pa.avi");
+        QueueVideo("INTRO/o10tu.avi");
+        QueueVideo("INTRO/o12pa.avi");
+        QueueVideo("LI/l_in.avi");
+        QueueVideo("FH/f_5ba.avi");
+        QueueVideo("FH/f5_1.avi");
+        QueueVideo("FH/f1_.avi");
+        QueueVideo("FH/f_1fa.avi");
+        QueueVideo("FH/f_1fb.avi");
+        QueueSong("GAMWAV/1_e_1.avi");
         playlist.Enqueue(new Command { type = CommandType.WAITFORSONG });
         playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 3 });
-        QueueSong("1_e_2.wav");
+        QueueSong("GAMWAV/1_e_2.avi");
         playlist.Enqueue(new Command { type = CommandType.WAITFORSONG });
         playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 1 });
-        QueueVideo("f1_6.avi");
+        QueueVideo("FH/f1_6.avi");
 
         //LoadVideo("f6_1.avi");
         //playlist.Enqueue("f1_.avi");

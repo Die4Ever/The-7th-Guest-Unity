@@ -27,4 +27,8 @@ mkdir wavs
 move *.wav wavs\
 mkdir xmis
 move *.xmi xmis\
+mkdir oggs
+copy "!t7gpath!*.ogg" "oggs\"
+mkdir midis
+copy "!t7gpath!Bonus Content\Soundtrack\The 7th Guest MIDIs\*" "midis\"
 pause
