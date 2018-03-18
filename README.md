@@ -1,4 +1,5 @@
 # The-7th-Guest-Unity
+# https://www.youtube.com/playlist?list=PLZIQTa_kwZhB_EW248QLAao0G6ZBIrHLc
 a remake of The 7th Guest in Unity, with options to upscale the original videos and gameplay options
 
 did some upscaling tests here https://www.youtube.com/playlist?list=PLZIQTa_kwZhDhJiNmrEGf2kTPLnKfdE0e
