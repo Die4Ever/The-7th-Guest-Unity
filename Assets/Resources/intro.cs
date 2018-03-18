@@ -7,7 +7,7 @@ public class intro : baseRoom {
 	// Use this for initialization
 	void Start () {
         BaseInit();
-        fmvman.QueueSong("../oggs/track1.ogg");
+        /*fmvman.QueueSong("../oggs/track1.ogg");
         fmvman.QueueVideoFade("HDISK/vlogo.avi", 1, 5, 1);
         fmvman.QueueVideoFade("HDISK/tripro.avi");
         fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 5 });
@@ -36,18 +36,27 @@ public class intro : baseRoom {
         QueueVideo("FH/f_5ba.avi");
         QueueVideo("FH/f5_1.avi");
         QueueVideo("FH/f1_.avi");
-        QueueVideo("FH/f_1fa.avi");
+        QueueVideo("FH/f_1fa.avi");*/
         QueueVideo("FH/f_1fb.avi");
         fmvman.QueueSong("GAMWAV/1_e_1.avi");
         fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITFORSONG });
-        fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 3 });
-        fmvman.QueueSong("GAMWAV/1_e_2.avi");
-        fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITFORSONG });
         fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 1 });
+        fmvman.QueueSong("GAMWAV/1_e_2.avi");
+        fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITFORSONG, callback = SwitchToFoyer });
+        //fmvman.playlist.Enqueue(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 1 });
     }
 	
 	// Update is called once per frame
-	void Update () {
+	/*void Update () {
 		
-	}
+	}*/
+
+    void SwitchToFoyer(FMVManager.Command c)
+    {
+        Debug.Log("SwitchToFoyer");
+        GameObject go = Instantiate(Resources.Load("foyer", typeof(GameObject))) as GameObject;
+        foyer f = go.GetComponent<foyer>();
+        f.currNode = 1;
+        Destroy(this);
+    }
 }

@@ -9,7 +9,7 @@ public class FMVManager : MonoBehaviour
     GameObject currentVideo = null;
     GameObject currentSong = null;
 
-    public enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME };
+    public enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME, SWITCHROOM };
     public class Command
     {
         public CommandType type=CommandType.VIDEO;
@@ -18,6 +18,7 @@ public class FMVManager : MonoBehaviour
         public float fadeInTime=0;
         public float fadeOutTime=0;
         public float playbackSpeed = 1;
+        public System.Action<Command> callback =null;
     };
 
     public Queue<Command> playlist = new Queue<Command>();
@@ -57,15 +58,30 @@ public class FMVManager : MonoBehaviour
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
     }
 
-    public void QueueVideoFade(string file, float fadeInTime, float fadeOutTime, float playbackSpeed)
+    public void QueueVideoFade(string file, float fadeInTime, float fadeOutTime, float playbackSpeed, System.Action<Command> callback=null)
     {
         playlist.Enqueue(new Command { file = file, fadeInTime = fadeInTime, fadeOutTime = fadeOutTime, playbackSpeed = playbackSpeed });
-        playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
+        playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, file = file, callback = callback });
     }
 
     IEnumerator PlaySong(Command c)
     {
         //var ac = Instantiate(new AudioClip());
+        /*if(c.file.EndsWith(".avi"))
+        {
+            Debug.Log(c.file);
+            GameObject go = Instantiate(baseVideoPlayer);
+            VideoPlayer vp = go.GetComponent<VideoPlayer>();
+            videoScript vs = go.GetComponent<videoScript>();
+            vp.url = path + c.file;
+            vp.targetCamera = null;
+            //vp.renderMode = VideoRenderMode.APIOnly;
+            vp.renderMode = VideoRenderMode.RenderTexture;
+            vs.fadeOutFinished += SongEndReached;
+            vp.prepareCompleted += SongPrepared;
+            vp.Prepare();
+            yield break;
+        }*/
         Debug.Log("test PlaySong");
         AudioSource source = Instantiate(baseVideoPlayer).GetComponent<AudioSource>();
         source.playOnAwake = true;
@@ -130,9 +146,11 @@ public class FMVManager : MonoBehaviour
             if (!audioSource.clip) return;
             if (audioSource.clip.loadState == AudioDataLoadState.Loading || audioSource.clip.loadState == AudioDataLoadState.Unloaded) return;
             if(audioSource.isPlaying) return;
-            Destroy(currentSong);
+            /*Destroy(currentSong);
             currentSong = null;
-            playlist.Dequeue();
+            playlist.Dequeue();*/
+            Debug.Log("detected song end");
+            SongEndReached(currentSong);
         }
         if(c.type == CommandType.WAITTIME)
         {
@@ -141,7 +159,19 @@ public class FMVManager : MonoBehaviour
         currentCommand = c;
         if (c.type == CommandType.SONG)
         {
-            StartCoroutine(PlaySong(c));
+            if (c.file.EndsWith(".avi"))
+            {
+                GameObject go = Instantiate(baseVideoPlayer);
+                VideoPlayer vp = go.GetComponent<VideoPlayer>();
+                videoScript vs = go.GetComponent<videoScript>();
+                vp.url = path + c.file;
+                vp.targetCamera = null;
+                vp.renderMode = VideoRenderMode.APIOnly;
+                vs.fadeOutFinished += SongEndReached;
+                vp.prepareCompleted += SongPrepared;
+                vp.Prepare();
+            }
+            else StartCoroutine(PlaySong(c));
             playlist.Dequeue();
         }
         if(c.type==CommandType.VIDEO)
@@ -156,8 +186,30 @@ public class FMVManager : MonoBehaviour
         Debug.Log("playlist count == "+playlist.Count.ToString());
         if(playlist.Peek().type==CommandType.WAITFORVIDEO)
         {
-            playlist.Dequeue();
+            Command c = playlist.Dequeue();
+            if(c.callback!=null) c.callback(c);
         }
+    }
+
+    
+    void SongEndReached(VideoPlayer vp)
+    {
+        SongEndReached(vp.gameObject);
+    }
+
+    void SongEndReached(GameObject s)
+    {
+        Debug.Log("playlist count == " + playlist.Count.ToString());
+        if (s!=null && s == currentSong)
+        {
+            if (playlist.Peek().type == CommandType.WAITFORSONG)
+            {
+                Command c = playlist.Dequeue();
+                if (c.callback != null) c.callback(c);
+            }
+            currentSong = null;
+        }
+        if(s!=null) Destroy(s);
     }
 
     void PrepareCompleted(VideoPlayer vp)
@@ -166,9 +218,16 @@ public class FMVManager : MonoBehaviour
         vp.Play();
         if (currentVideo)
         {
-            //Destroy(currentVideo, 0.01f);
+            Destroy(currentVideo, 20);//make sure we leave enough time for crossfading and overlays... how will this work with puzzle sprites? might need to do those very differently
             //StartCoroutine(DestroyVideoPlayer(currentVideo));
         }
         currentVideo = vp.gameObject;
+    }
+
+    void SongPrepared(VideoPlayer vp)
+    {
+        currentSong = vp.gameObject;
+        //System.Threading.Thread.Sleep(10);
+        vp.Play();
     }
 }

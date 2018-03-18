@@ -21,6 +21,7 @@ public class videoScript : MonoBehaviour
         vp.targetCameraAlpha = 0.0f;
         vp.prepareCompleted += PrepareCompleted;
         vp.loopPointReached += EndReached;
+        vp.targetCamera = Camera.main;
     }
 
     // Update is called once per frame
@@ -46,22 +47,22 @@ public class videoScript : MonoBehaviour
             }
             else if(fadeOutSpeed > 0)
             {
-                Destroy(this.gameObject, 15.1f);
                 vp.targetCameraAlpha = 0;
                 if (fadeOutFinished != null)
                 {
                     fadeOutFinished.Invoke(vp);
                     fadeOutFinished = null;
                 }
+                Destroy(this.gameObject, 15);
             }
             else
             {
-                Destroy(this.gameObject, 15.1f);
                 if (fadeOutFinished != null)
                 {
                     fadeOutFinished.Invoke(vp);
                     fadeOutFinished = null;
                 }
+                //Destroy(this.gameObject);//only destroy when there is a video to replace it?
             }
         }
         else if (vp.targetCameraAlpha != 1)
@@ -77,12 +78,12 @@ public class videoScript : MonoBehaviour
         {
             vp.targetCameraAlpha = 0;
             vp.Pause();
-            vp.targetCamera = Camera.main;
+            //vp.targetCamera = Camera.main;
         }
         else
         {
             vp.targetCameraAlpha = 1;
-            vp.targetCamera = Camera.main;
+            //vp.targetCamera = Camera.main;
         }
     }
 
@@ -90,7 +91,8 @@ public class videoScript : MonoBehaviour
     {
         Debug.Log("EndReached");
         fadingOut = true;
-        fadeOutFinished.Invoke(vp);
+        if(fadeOutFinished!=null)
+            fadeOutFinished.Invoke(vp);
         fadeOutFinished = null;
         //Destroy(this.gameObject, fadeOutTime);
     }
