@@ -32,3 +32,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+#T7G extraction
+/extractedtemp/
+/upscaled*/
+ffmpeg.exe
+/wavs/
+/xmis/

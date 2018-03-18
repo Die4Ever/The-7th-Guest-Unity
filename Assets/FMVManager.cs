@@ -22,17 +22,18 @@ public class FMVManager : MonoBehaviour
 
     Queue<Command> playlist = new Queue<Command>();
     Command currentCommand = null;
-    string path = "file://C:/Users/die4e/Videos/t7g/upscaled2/";
+    string path = "file://D:/t7g/upscaled2/";
 
     // Use this for initialization
     void Start()
     {
         Application.runInBackground = true;
         Debug.Log("test");
-        //vp.url = "file://C:/Users/die4e/Videos/t7g/upscaled/deband-f1_.avi";
+        //vp.url = "file://D:/t7g/upscaled/deband-f1_.avi";
         QueueSong("track1.ogg");
-        QueueVideoFade("vlogo.avi", 0, 5, 1);
+        QueueVideoFade("vlogo.avi", 5, 5, 1);
         QueueVideoFade("tripro.avi");
+        playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 5 });
         QueueVideoFade("title.avi", 1.0f, 0.0f, 0.5f);
 
         QueueVideo("o1pa.avi");
