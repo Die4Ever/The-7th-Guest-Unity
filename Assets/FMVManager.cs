@@ -9,8 +9,8 @@ public class FMVManager : MonoBehaviour
     GameObject currentVideo = null;
     GameObject currentSong = null;
 
-    enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME };
-    class Command
+    public enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME };
+    public class Command
     {
         public CommandType type=CommandType.VIDEO;
         public string file;
@@ -20,7 +20,7 @@ public class FMVManager : MonoBehaviour
         public float playbackSpeed = 1;
     };
 
-    Queue<Command> playlist = new Queue<Command>();
+    public Queue<Command> playlist = new Queue<Command>();
     Command currentCommand = null;
     string path = "";
 
@@ -29,6 +29,7 @@ public class FMVManager : MonoBehaviour
     {
         var w = GUI.Window(0, new Rect(0, 0, 1000, 200), DialogWindow, Application.dataPath);
     }*/
+ 
     // Use this for initialization
     void Start()
     {
@@ -37,68 +38,26 @@ public class FMVManager : MonoBehaviour
         Debug.Log(Application.streamingAssetsPath);
         Application.runInBackground = true;
         Debug.Log("test");
-        //vp.url = "file://D:/t7g/upscaled/deband-f1_.avi";
-        QueueSong("../oggs/track1.ogg");
-        QueueVideoFade("HDISK/vlogo.avi", 1, 5, 1);
-        QueueVideoFade("HDISK/tripro.avi");
-        playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 5 });
-        QueueVideoFade("HDISK/title.avi", 1.0f, 0.0f, 0.5f);
-
-        QueueVideo("INTRO/o1pa.avi");
-        QueueVideo("INTRO/o1tu.avi");
-        QueueVideo("INTRO/o3pa.avi");
-        QueueVideo("INTRO/o3tu.avi");
-        QueueVideo("INTRO/o4pa.avi");
-        QueueVideo("INTRO/o4tu.avi");
-        QueueVideo("INTRO/o5pa.avi");
-        QueueVideo("INTRO/o5tu.avi");
-        QueueVideo("INTRO/o6pa.avi");
-        QueueVideo("INTRO/o6tu.avi");
-        QueueVideo("INTRO/o7pa.avi");
-        QueueVideo("INTRO/o7tu.avi");
-        QueueVideo("INTRO/o8pa.avi");
-        QueueVideo("INTRO/o8tu.avi");
-        QueueVideo("INTRO/o9pa.avi");
-        QueueVideo("INTRO/o9tu.avi");
-        QueueVideo("INTRO/o10pa.avi");
-        QueueVideo("INTRO/o10tu.avi");
-        QueueVideo("INTRO/o12pa.avi");
-        QueueVideo("LI/l_in.avi");
-        QueueVideo("FH/f_5ba.avi");
-        QueueVideo("FH/f5_1.avi");
-        QueueVideo("FH/f1_.avi");
-        QueueVideo("FH/f_1fa.avi");
-        QueueVideo("FH/f_1fb.avi");
-        QueueSong("GAMWAV/1_e_1.avi");
-        playlist.Enqueue(new Command { type = CommandType.WAITFORSONG });
-        playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 3 });
-        QueueSong("GAMWAV/1_e_2.avi");
-        playlist.Enqueue(new Command { type = CommandType.WAITFORSONG });
-        playlist.Enqueue(new Command { type = CommandType.WAITTIME, countdown = 1 });
-        QueueVideo("FH/f1_6.avi");
-
-        //LoadVideo("f6_1.avi");
-        //playlist.Enqueue("f1_.avi");
     }
 
-    void QueueSong(string file)
+    public void QueueSong(string file)
     {
         playlist.Enqueue(new Command { file = file, type = CommandType.SONG });
     }
 
-    void QueueVideo(string file)
+    public void QueueVideo(string file)
     {
         playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
     }
 
-    void QueueVideoFade(string file)
+    public void QueueVideoFade(string file)
     {
         playlist.Enqueue(new Command { file = file, fadeInTime = 5, fadeOutTime = 5 });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
     }
 
-    void QueueVideoFade(string file, float fadeInTime, float fadeOutTime, float playbackSpeed)
+    public void QueueVideoFade(string file, float fadeInTime, float fadeOutTime, float playbackSpeed)
     {
         playlist.Enqueue(new Command { file = file, fadeInTime = fadeInTime, fadeOutTime = fadeOutTime, playbackSpeed = playbackSpeed });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
@@ -145,6 +104,12 @@ public class FMVManager : MonoBehaviour
     void Update()
     {
         PlaylistProcess();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            GameObject.FindObjectOfType<baseRoom>().OnClick(pos);
+        }
     }
 
     void PlaylistProcess()
