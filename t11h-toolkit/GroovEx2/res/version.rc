@@ -1,0 +1,26 @@
+1 VERSIONINFO
+FILEVERSION 1,0,5318,0
+PRODUCTVERSION 1,0,5318,0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040704E4"
+    {
+      VALUE "CompanyName", "http://oezmen.eu/\000"
+      VALUE "FileDescription", "The 11th Hour GJD/RL extractor\000"
+      VALUE "FileVersion", "1.0.5318.0 (11thhour-groovex2_main.140724-2124)\000"
+      VALUE "InternalName", "GroovEx2\000"
+      VALUE "LegalCopyright", "Copyright © 2000-2014 Deniz Oezmen\000"
+      VALUE "OriginalFilename", "GroovEx2.exe\000"
+      VALUE "ProductName", "GroovEx2\000"
+      VALUE "ProductVersion", "1.0.5318\000"
+    }
+  }
+
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x0407 0x04E4
+  }
+}
