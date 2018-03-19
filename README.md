@@ -13,6 +13,8 @@ http://wiki.xentax.com/index.php/The_7th_Guest_Toolset
 
 http://wiki.xentax.com/index.php/The_7th_Guest_VDX
 
+http://oezmen.eu/gameresources/
+
 http://www.mirsoft.info/gmb/music_info.php?id_ele=MTI3NQ==
 
 Also need to test out Waifu2x upscaler
