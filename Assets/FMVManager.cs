@@ -48,6 +48,7 @@ public class FMVManager : MonoBehaviour
 
     public void QueueVideo(string file)
     {
+        Debug.Log(file);
         playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
     }
@@ -120,12 +121,6 @@ public class FMVManager : MonoBehaviour
     void Update()
     {
         PlaylistProcess();
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-            GameObject.FindObjectOfType<baseRoom>().OnClick(pos);
-        }
     }
 
     void PlaylistProcess()
@@ -183,7 +178,7 @@ public class FMVManager : MonoBehaviour
 
     void EndReached(VideoPlayer vp)
     {
-        Debug.Log("playlist count == "+playlist.Count.ToString());
+        //Debug.Log("playlist count == "+playlist.Count.ToString());
         if(playlist.Peek().type==CommandType.WAITFORVIDEO)
         {
             Command c = playlist.Dequeue();
@@ -199,7 +194,7 @@ public class FMVManager : MonoBehaviour
 
     void SongEndReached(GameObject s)
     {
-        Debug.Log("playlist count == " + playlist.Count.ToString());
+        //Debug.Log("playlist count == " + playlist.Count.ToString());
         if (s!=null && s == currentSong)
         {
             if (playlist.Peek().type == CommandType.WAITFORSONG)
@@ -218,7 +213,9 @@ public class FMVManager : MonoBehaviour
         vp.Play();
         if (currentVideo)
         {
-            Destroy(currentVideo, 20);//make sure we leave enough time for crossfading and overlays... how will this work with puzzle sprites? might need to do those very differently
+            float fadeOut = 0.5f;
+            if(vp.GetComponent<videoScript>()) fadeOut += vp.GetComponent<videoScript>().fadeOutTime;
+            Destroy(currentVideo, fadeOut);//make sure we leave enough time for crossfading and overlays... how will this work with puzzle sprites? might need to do those very differently
             //StartCoroutine(DestroyVideoPlayer(currentVideo));
         }
         currentVideo = vp.gameObject;

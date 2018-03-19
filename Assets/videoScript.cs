@@ -89,7 +89,7 @@ public class videoScript : MonoBehaviour
 
     void EndReached(VideoPlayer vp)
     {
-        Debug.Log("EndReached");
+        //Debug.Log("EndReached");
         fadingOut = true;
         if(fadeOutFinished!=null)
             fadeOutFinished.Invoke(vp);
@@ -99,7 +99,7 @@ public class videoScript : MonoBehaviour
 
     void PrepareCompleted(VideoPlayer vp)
     {
-        Debug.Log("PrepareCompleted");
+        //Debug.Log("PrepareCompleted");
         //fadeInTime = 0;
         //fadeOutTime = 0;
         if(fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
