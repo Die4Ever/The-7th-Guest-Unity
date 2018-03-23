@@ -56,8 +56,8 @@ public class intro : baseRoom {
         Debug.Log("SwitchToFoyer");
         GameObject go = Instantiate(Resources.Load("foyer", typeof(GameObject))) as GameObject;
         foyer f = go.GetComponent<foyer>();
-        f.currNode = 1;
-        f.facing = 'c';
+        f.currPos.node = 1;
+        f.currPos.facing = 'c';
         Destroy(this);
     }
 }

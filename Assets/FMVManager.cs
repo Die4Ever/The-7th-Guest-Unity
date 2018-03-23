@@ -53,6 +53,13 @@ public class FMVManager : MonoBehaviour
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO });
     }
 
+    public void QueueVideoCallback(string file, System.Action<Command> callback)
+    {
+        Debug.Log(file);
+        playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f });
+        playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, callback=callback });
+    }
+
     public void QueueVideoFade(string file)
     {
         playlist.Enqueue(new Command { file = file, fadeInTime = 5, fadeOutTime = 5 });
