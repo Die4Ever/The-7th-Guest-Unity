@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class baseRoom : MonoBehaviour {
-    public static Texture2D handbeckon, handwag, dramamask, chatteringteeth, throbbingbrain, blueeye, browneye;
     protected static Texture2D currcursor;
     protected FMVManager fmvman;
     protected string myvidpath;
@@ -52,14 +51,7 @@ public class baseRoom : MonoBehaviour {
         nodeConnections = new List<NodeConnection>();
         currPos.node = 1;
 
-        handwag = Instantiate(Resources.Load("cursors/wagging-hand", typeof(Texture2D))) as Texture2D;
-        handbeckon = Instantiate(Resources.Load("cursors/beckon", typeof(Texture2D))) as Texture2D;
-        dramamask = Instantiate(Resources.Load("cursors/drama-mask", typeof(Texture2D))) as Texture2D;
-        chatteringteeth = Instantiate(Resources.Load("cursors/chattering-teeth", typeof(Texture2D))) as Texture2D;
-        throbbingbrain = Instantiate(Resources.Load("cursors/throbbing-skull", typeof(Texture2D))) as Texture2D;
-        blueeye = Instantiate(Resources.Load("cursors/blue-eyeball", typeof(Texture2D))) as Texture2D;
-        browneye = Instantiate(Resources.Load("cursors/brown-eyeball", typeof(Texture2D))) as Texture2D;
-        SetCursor(handwag);
+        SetCursor(fmvman.handwag);
     }
 
 	// Use this for initialization
@@ -70,6 +62,7 @@ public class baseRoom : MonoBehaviour {
     protected void SetCursor(Texture2D c)
     {
         if (currcursor == c) return;
+        //Debug.Log("changing cursor");
         Cursor.SetCursor(c, Vector2.zero, CursorMode.Auto);
         currcursor = c;
     }
@@ -78,34 +71,34 @@ public class baseRoom : MonoBehaviour {
     {
         if(fmvman.playlist.Count>0)
         {
-            SetCursor(handwag);
+            SetCursor(fmvman.handwag);
             return;
         }
         Vector2 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
         var nc = GetNodeConnection(pos);
         if (nc == null)
         {
-            SetCursor(handwag);
+            SetCursor(fmvman.handwag);
         }
         else if (nc.type == ClickboxType.DRAMAMASK)
         {
-            SetCursor(dramamask);
+            SetCursor(fmvman.dramamask);
         }
         else if (nc.type == ClickboxType.CHATTERINGTEETH)
         {
-            SetCursor(chatteringteeth);
+            SetCursor(fmvman.chatteringteeth);
         }
         else if (nc.type == ClickboxType.PUZZLE)
         {
-            SetCursor(throbbingbrain);
+            SetCursor(fmvman.throbbingbrain);
         }
         else
         {
-            SetCursor(handbeckon);
+            SetCursor(fmvman.handbeckon);
         }
         if (Input.GetMouseButtonDown(0))
         {
-            OnClick(pos);
+            OnClick(pos, nc);
         }
     }
 
@@ -192,7 +185,7 @@ public class baseRoom : MonoBehaviour {
         }
     }
 
-    public void OnClick(Vector2 pos)
+    protected void OnClick(Vector2 pos, NodeConnection nc)
     {
         Debug.Log("clicky! "+pos.ToString()+" from "+ currPos.node.ToString()+" "+ currPos.facing);
         if (fmvman.playlist.Count > 0)
@@ -213,7 +206,7 @@ public class baseRoom : MonoBehaviour {
             return;
         }*/
 
-        var nc = GetNodeConnection(pos);
+        //var nc = GetNodeConnection(pos);
         if(nc!=null)
         {
             nc.timesClicked++;

@@ -12,6 +12,8 @@ public class videoScript : MonoBehaviour
     VideoPlayer vp = null;
     bool fadingOut = false;
     public VideoPlayer.EventHandler fadeOutFinished;
+    public Color transparentColor = new Color(0, 0, 0, 0);
+    public RenderTexture baseRenderTexture;
 
     // Use this for initialization
     void Start()
@@ -106,5 +108,13 @@ public class videoScript : MonoBehaviour
         if(fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
         if(fadeInTime>0) vp.targetCameraAlpha = 0;
         else vp.targetCameraAlpha = 1;
+
+        //if(transparentColor.a>0)
+        {
+            vp.renderMode = VideoRenderMode.RenderTexture;
+            vp.targetTexture = Instantiate(baseRenderTexture);
+            vp.targetTexture.width = Screen.width;
+            vp.targetTexture.height = Screen.height;
+        }
     }
 }

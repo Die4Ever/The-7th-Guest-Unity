@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class foyer : baseRoom {
 
-    public int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6;
+    public int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
     // Use this for initialization
     void Start () {
         BaseInit();
@@ -42,7 +42,7 @@ public class foyer : baseRoom {
 
     void f2(NodeConnection nc)
     {
-        fmvman.QueueVideo(myvidpath+"2_.avi");
+        //fmvman.QueueVideo(myvidpath+"2_.avi");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
     }
@@ -50,5 +50,18 @@ public class foyer : baseRoom {
     void startspiders(NodeConnection nc)
     {
         Debug.Log("startspiders()");
+        currPos.node = spiders;
+        fmvman.QueueSong("GAMWAV/2_s_2.avi");
+        fmvman.QueueVideo(myvidpath + "1_pf.avi");
+        //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
+        GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
+        go.GetComponent<basePuzzle>().endPuzzle = endspiders;
+    }
+
+    void endspiders(string s)
+    {
+        currPos.node = front_door;
+        fmvman.QueueVideo(myvidpath + "3_0.avi");
+        fmvman.QueueVideo(myvidpath + "1_pb.avi");
     }
 }

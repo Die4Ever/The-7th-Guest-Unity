@@ -8,8 +8,9 @@ public class FMVManager : MonoBehaviour
     public GameObject baseVideoPlayer;
     GameObject currentVideo = null;
     GameObject currentSong = null;
+    public Texture2D handbeckon, handwag, dramamask, chatteringteeth, throbbingbrain, blueeye, browneye;
 
-    public enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME, SWITCHROOM };
+    public enum CommandType { VIDEO, SONG, WAITFORVIDEO, WAITFORSONG, WAITTIME, SWITCHROOM, OVERLAY };
     public class Command
     {
         public CommandType type=CommandType.VIDEO;
@@ -18,6 +19,7 @@ public class FMVManager : MonoBehaviour
         public float fadeInTime=0;
         public float fadeOutTime=0;
         public float playbackSpeed = 1;
+        public Color transparentColor = new Color(0, 0, 0, 0);
         public System.Action<Command> callback =null;
     };
 
@@ -39,11 +41,21 @@ public class FMVManager : MonoBehaviour
         Debug.Log(Application.streamingAssetsPath);
         Application.runInBackground = true;
         Debug.Log("test");
+
+        handwag = Instantiate(Resources.Load("cursors/wagging-hand", typeof(Texture2D))) as Texture2D;
+        handbeckon = Instantiate(Resources.Load("cursors/beckon", typeof(Texture2D))) as Texture2D;
+        dramamask = Instantiate(Resources.Load("cursors/drama-mask", typeof(Texture2D))) as Texture2D;
+        chatteringteeth = Instantiate(Resources.Load("cursors/chattering-teeth", typeof(Texture2D))) as Texture2D;
+        throbbingbrain = Instantiate(Resources.Load("cursors/throbbing-skull", typeof(Texture2D))) as Texture2D;
+        blueeye = Instantiate(Resources.Load("cursors/blue-eyeball", typeof(Texture2D))) as Texture2D;
+        browneye = Instantiate(Resources.Load("cursors/brown-eyeball", typeof(Texture2D))) as Texture2D;
     }
 
-    public void QueueSong(string file)
+    public void QueueSong(string file, bool wait=false)
     {
         playlist.Enqueue(new Command { file = file, type = CommandType.SONG });
+        if (wait)
+            playlist.Enqueue(new Command { type=CommandType.WAITFORSONG });
     }
 
     public void QueueVideo(string file)
@@ -58,6 +70,13 @@ public class FMVManager : MonoBehaviour
         Debug.Log(file);
         playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, callback=callback });
+    }
+
+    public void QueueOverlayCallback(string file, System.Action<Command> callback, Color transparentColor)
+    {
+        Debug.Log(file);
+        playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f, transparentColor=transparentColor });
+        playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, callback = callback });
     }
 
     public void QueueVideoFade(string file)
@@ -114,6 +133,7 @@ public class FMVManager : MonoBehaviour
         GameObject go = Instantiate(baseVideoPlayer);
         VideoPlayer vp = go.GetComponent<VideoPlayer>();
         videoScript vs = go.GetComponent<videoScript>();
+        vs.transparentColor = c.transparentColor;
         vs.fadeInTime = c.fadeInTime;
         vs.fadeOutTime = c.fadeOutTime;
         vp.url = path + c.file;
@@ -186,7 +206,7 @@ public class FMVManager : MonoBehaviour
     void EndReached(VideoPlayer vp)
     {
         //Debug.Log("playlist count == "+playlist.Count.ToString());
-        if(playlist.Peek().type==CommandType.WAITFORVIDEO)
+        if(playlist.Count>0 && playlist.Peek().type==CommandType.WAITFORVIDEO)
         {
             Command c = playlist.Dequeue();
             if(c.callback!=null) c.callback(c);
@@ -204,7 +224,7 @@ public class FMVManager : MonoBehaviour
         //Debug.Log("playlist count == " + playlist.Count.ToString());
         if (s!=null && s == currentSong)
         {
-            if (playlist.Peek().type == CommandType.WAITFORSONG)
+            if (playlist.Count>0 && playlist.Peek().type == CommandType.WAITFORSONG)
             {
                 Command c = playlist.Dequeue();
                 if (c.callback != null) c.callback(c);

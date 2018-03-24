@@ -135,6 +135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeInTime: 0
   fadeOutTime: 0
+  transparentColor: {r: 0, g: 0, b: 0, a: 0}
+  baseRenderTexture: {fileID: 8400000, guid: 916e9bf4818d25447a660ca8736d6ab9, type: 2}
 --- !u!328 &328674524266222350
 VideoPlayer:
   m_ObjectHideFlags: 1
