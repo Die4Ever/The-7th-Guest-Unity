@@ -21,6 +21,8 @@ public class FMVManager : MonoBehaviour
         public float playbackSpeed = 1;
         public Color transparentColor = new Color(0, 0, 0, 0);
         public System.Action<Command> callback =null;
+        public float threshold = 0.24f;
+        public float slope = 0.6f;
     };
 
     public Queue<Command> playlist = new Queue<Command>();
@@ -72,10 +74,10 @@ public class FMVManager : MonoBehaviour
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, callback=callback });
     }
 
-    public void QueueOverlayCallback(string file, System.Action<Command> callback, Color transparentColor)
+    public void QueueOverlayCallback(string file, System.Action<Command> callback, Color transparentColor, float threshold=0.24f, float slope=0.6f)
     {
         Debug.Log(file);
-        playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f, transparentColor=transparentColor });
+        playlist.Enqueue(new Command { file = file, fadeInTime = 0.0f, fadeOutTime = 0.0f, transparentColor=transparentColor, threshold=threshold, slope=slope });
         playlist.Enqueue(new Command { type = CommandType.WAITFORVIDEO, callback = callback });
     }
 
@@ -136,6 +138,8 @@ public class FMVManager : MonoBehaviour
         vs.transparentColor = c.transparentColor;
         vs.fadeInTime = c.fadeInTime;
         vs.fadeOutTime = c.fadeOutTime;
+        vs.threshold = c.threshold;
+        vs.slope = c.slope;
         vp.url = path + c.file;
         vp.playbackSpeed = c.playbackSpeed;
         vp.prepareCompleted += PrepareCompleted;

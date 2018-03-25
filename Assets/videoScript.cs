@@ -13,7 +13,9 @@ public class videoScript : MonoBehaviour
     bool fadingOut = false;
     public VideoPlayer.EventHandler fadeOutFinished;
     public Color transparentColor = new Color(0, 0, 0, 0);
-    public RenderTexture baseRenderTexture;
+    public GameObject baseRenderPlane;
+    public float threshold = 0.24f;
+    public float slope = 0.6f;
 
     // Use this for initialization
     void Start()
@@ -109,12 +111,21 @@ public class videoScript : MonoBehaviour
         if(fadeInTime>0) vp.targetCameraAlpha = 0;
         else vp.targetCameraAlpha = 1;
 
-        //if(transparentColor.a>0)
+        if(transparentColor.a>0)
         {
             vp.renderMode = VideoRenderMode.RenderTexture;
-            vp.targetTexture = Instantiate(baseRenderTexture);
-            vp.targetTexture.width = Screen.width;
-            vp.targetTexture.height = Screen.height;
+            var rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 0), Quaternion.Euler(90, -90, 90));
+            var r = rp.GetComponent<MeshRenderer>();
+            var m = r.material;
+            m.mainTexture = Instantiate(m.mainTexture);
+            Debug.Log(m.name);
+            Debug.Log(m.ToString());
+            m.SetFloat("_thresh", threshold);
+            m.SetFloat("_slope", slope);
+            m.SetColor("_keyingColor", transparentColor);
+            vp.targetTexture = m.mainTexture as RenderTexture;
+            //vp.targetTexture.width = Screen.width;
+            //vp.targetTexture.height = Screen.height;
         }
     }
 }
