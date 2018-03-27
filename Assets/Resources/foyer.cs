@@ -42,7 +42,7 @@ public class foyer : baseRoom {
 
     void f2(NodeConnection nc)
     {
-        //fmvman.QueueVideo(myvidpath+"2_.avi");
+        fmvman.QueueVideo(myvidpath+"2_.avi");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
     }

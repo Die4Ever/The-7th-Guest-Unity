@@ -16,6 +16,7 @@ public class basePuzzle : MonoBehaviour
     };
     protected List<PuzzlePoint> puzzlePoints;
     public System.Action<string> endPuzzle = null;
+    protected List<FMVManager> fmvmen;
 
     protected void BaseInit()
     {
@@ -25,6 +26,7 @@ public class basePuzzle : MonoBehaviour
             return;
         }
         puzzlePoints = new List<PuzzlePoint>();
+        fmvmen = new List<FMVManager>();
 
         fmvman = GameObject.FindObjectOfType<FMVManager>();
         SetCursor(fmvman.handwag);
@@ -79,5 +81,14 @@ public class basePuzzle : MonoBehaviour
     {
         Debug.Log("clicked " + pp.name+", at "+pos.ToString());
         if (pp.callback != null) pp.callback(pp);
+    }
+
+    protected void OnDestroy()
+    {
+        foreach (var f in fmvmen)
+        {
+            Destroy(f, 0.5f);
+        }
+        fmvmen.Clear();
     }
 }

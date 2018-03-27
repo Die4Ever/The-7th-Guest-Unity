@@ -16,6 +16,7 @@ public class videoScript : MonoBehaviour
     public GameObject baseRenderPlane;
     public float threshold = 0.24f;
     public float slope = 0.6f;
+    GameObject rp;
 
     // Use this for initialization
     void Start()
@@ -114,7 +115,7 @@ public class videoScript : MonoBehaviour
         if(transparentColor.a>0)
         {
             vp.renderMode = VideoRenderMode.RenderTexture;
-            var rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 0), Quaternion.Euler(90, -90, 90));
+            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 0), Quaternion.Euler(90, -90, 90));
             var r = rp.GetComponent<MeshRenderer>();
             var m = r.material;
             m.mainTexture = Instantiate(m.mainTexture);
@@ -126,6 +127,21 @@ public class videoScript : MonoBehaviour
             vp.targetTexture = m.mainTexture as RenderTexture;
             //vp.targetTexture.width = Screen.width;
             //vp.targetTexture.height = Screen.height;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        vp.renderMode = VideoRenderMode.APIOnly;
+        if(vp.targetTexture!=null)
+        {
+            Destroy(vp.targetTexture);
+            vp.targetTexture = null;
+        }
+        if(rp!=null)
+        {
+            Destroy(rp);
+            rp = null;
         }
     }
 }

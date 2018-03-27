@@ -244,9 +244,10 @@ public class FMVManager : MonoBehaviour
         vp.Play();
         if (currentVideo)
         {
-            float fadeOut = 0.5f;
-            if(vp.GetComponent<videoScript>()) fadeOut += vp.GetComponent<videoScript>().fadeOutTime;
-            Destroy(currentVideo, fadeOut);//make sure we leave enough time for crossfading and overlays... how will this work with puzzle sprites? might need to do those very differently
+            float fadeOut = 0.0f;
+            if(currentVideo.GetComponent<videoScript>()) fadeOut += currentVideo.GetComponent<videoScript>().fadeOutTime;
+            //if(currentVideo.GetComponent<VideoPlayer>()) currentVideo.GetComponent<VideoPlayer>().renderMode = VideoRenderMode.APIOnly;
+            Destroy(currentVideo, fadeOut+0.04f);//make sure we leave enough time for crossfading and overlays... how will this work with puzzle sprites? might need to do those very differently
             //StartCoroutine(DestroyVideoPlayer(currentVideo));
         }
         currentVideo = vp.gameObject;
@@ -257,5 +258,11 @@ public class FMVManager : MonoBehaviour
         currentSong = vp.gameObject;
         //System.Threading.Thread.Sleep(10);
         vp.Play();
+    }
+
+    private void OnDestroy()
+    {
+        if (currentSong) Destroy(currentSong);
+        if (currentVideo) Destroy(currentVideo);
     }
 }
