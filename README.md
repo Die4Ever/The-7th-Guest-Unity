@@ -26,4 +26,4 @@ https://github.com/dthpham/butterflow/tree/master/docs
 SCUMMVM's implementation of the Groovie engine should be a valuable resource https://github.com/scummvm/scummvm/tree/master/engines/groovie
 
 
-mouse cursors downloaded from https://tbyte.com/downloads/
+mouse cursors downloaded from https://tbyte.com/downloads/ later they can be perfectly extracted from the game files
