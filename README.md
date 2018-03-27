@@ -24,3 +24,6 @@ https://github.com/dthpham/butterflow/blob/master/docs/Example-Usage.md
 https://github.com/dthpham/butterflow/tree/master/docs
 
 SCUMMVM's implementation of the Groovie engine should be a valuable resource https://github.com/scummvm/scummvm/tree/master/engines/groovie
+
+
+mouse cursors downloaded from https://tbyte.com/downloads/
