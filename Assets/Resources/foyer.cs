@@ -42,7 +42,7 @@ public class foyer : baseRoom {
 
     void f2(NodeConnection nc)
     {
-        fmvman.QueueVideo(myvidpath+"2_.avi");
+        QueueMovement("2_.avi");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
     }
@@ -51,8 +51,8 @@ public class foyer : baseRoom {
     {
         Debug.Log("startspiders()");
         currPos.node = spiders;
-        fmvman.QueueSong("GAMWAV/2_s_2.avi");
-        fmvman.QueueVideo(myvidpath + "1_pf.avi");
+        PlaySound("GAMWAV/2_s_2.avi");
+        QueueMovement("1_pf.avi");
         //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
         GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
         go.GetComponent<basePuzzle>().endPuzzle = endspiders;
@@ -61,7 +61,7 @@ public class foyer : baseRoom {
     void endspiders(string s)
     {
         currPos.node = front_door;
-        fmvman.QueueVideo(myvidpath + "3_0.avi");
-        fmvman.QueueVideo(myvidpath + "1_pb.avi");
+        QueueMovement("3_0.avi");
+        QueueMovement("1_pb.avi");
     }
 }

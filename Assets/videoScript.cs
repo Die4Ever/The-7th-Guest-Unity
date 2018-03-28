@@ -11,6 +11,8 @@ public class videoScript : MonoBehaviour
     float fadeOutSpeed = 0;
     VideoPlayer vp = null;
     bool fadingOut = false;
+    public bool done = false;
+    public bool prepared = false;
     public VideoPlayer.EventHandler fadeOutFinished;
     public Color transparentColor = new Color(0, 0, 0, 0);
     public GameObject baseRenderPlane;
@@ -55,6 +57,7 @@ public class videoScript : MonoBehaviour
                 vp.targetCameraAlpha = 0;
                 if (fadeOutFinished != null)
                 {
+                    done = true;
                     fadeOutFinished.Invoke(vp);
                     fadeOutFinished = null;
                 }
@@ -64,6 +67,7 @@ public class videoScript : MonoBehaviour
             {
                 if (fadeOutFinished != null)
                 {
+                    done = true;
                     fadeOutFinished.Invoke(vp);
                     fadeOutFinished = null;
                 }
@@ -79,6 +83,7 @@ public class videoScript : MonoBehaviour
 
     void VideoStarted(VideoPlayer vp)
     {
+        done = false;
         if (fadeInTime > 0)
         {
             vp.targetCameraAlpha = 0;
@@ -107,7 +112,9 @@ public class videoScript : MonoBehaviour
         //Debug.Log("PrepareCompleted");
         //fadeInTime = 0;
         //fadeOutTime = 0;
-        if(fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
+        done = false;
+        prepared = true;
+        if (fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
         if(fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
         if(fadeInTime>0) vp.targetCameraAlpha = 0;
         else vp.targetCameraAlpha = 1;

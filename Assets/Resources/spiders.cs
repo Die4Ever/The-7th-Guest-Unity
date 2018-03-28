@@ -69,7 +69,7 @@ public class spiders : basePuzzle {
             Debug.Log("spot already filled");
             return;
         }
-        if (currSpider == -1)
+        /*if (currSpider == -1)
         {
             if ( spiderSpots[(spot + 3) % 8] && spiderSpots[(spot + 5) % 8] )
             {
@@ -91,7 +91,7 @@ public class spiders : basePuzzle {
                 spiderSpots[spot] = true;
                 currSpider = -1;
             }
-        }
+        }*/
     }
 
     void SpiderArrived(FMVManager.Command c)
@@ -104,12 +104,7 @@ public class spiders : basePuzzle {
         if (spidersCount == 7)
         {
             Debug.Log("You Win!");
-            fmvman.QueueSong("GAMWAV/gen_s_2.avi", true);
-            foreach (var f in fmvmen)
-            {
-                Destroy(f, 0.5f);
-            }
-            fmvmen.Clear();
+            PlaySound("GAMWAV/gen_s_2.avi");
             if (endPuzzle != null) endPuzzle("spiders");
             Destroy(this);
         }

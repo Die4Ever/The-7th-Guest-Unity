@@ -16,7 +16,6 @@ public class basePuzzle : MonoBehaviour
     };
     protected List<PuzzlePoint> puzzlePoints;
     public System.Action<string> endPuzzle = null;
-    protected List<FMVManager> fmvmen;
 
     protected void BaseInit()
     {
@@ -26,7 +25,6 @@ public class basePuzzle : MonoBehaviour
             return;
         }
         puzzlePoints = new List<PuzzlePoint>();
-        fmvmen = new List<FMVManager>();
 
         fmvman = GameObject.FindObjectOfType<FMVManager>();
         SetCursor(fmvman.handwag);
@@ -85,10 +83,26 @@ public class basePuzzle : MonoBehaviour
 
     protected void OnDestroy()
     {
-        foreach (var f in fmvmen)
-        {
-            Destroy(f, 0.5f);
-        }
-        fmvmen.Clear();
+        fmvman.ClearQueue("puzzle");
+    }
+
+    protected void QueueVideo(string file)
+    {
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
+    }
+
+    protected void QueueMovement(string file)
+    {
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
+    }
+
+    protected void PlaySong(string file)
+    {
+        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.SONG, tags = "puzzle" });
+    }
+
+    protected void PlaySound(string file)
+    {
+        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle" });
     }
 }

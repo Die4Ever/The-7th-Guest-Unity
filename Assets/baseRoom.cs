@@ -167,7 +167,7 @@ public class baseRoom : MonoBehaviour {
         if (currPos.node != to)
         {
             //Debug.Log("going from node " + currNode.ToString() + " to " + to.ToString());
-            fmvman.QueueVideo(myvidpath + currPos.node.ToString() + "_" + to.ToString() + ".avi");
+            QueueMovement(currPos.node.ToString() + "_" + to.ToString() + ".avi");
             currPos.node = to;
             currPos.facing = toFacing;
         }
@@ -175,11 +175,11 @@ public class baseRoom : MonoBehaviour {
         {
             if (currPos.facing + 1 == toFacing || currPos.facing > toFacing + 1)//f
             {
-                fmvman.QueueVideo(myvidpath + "_" + currPos.node.ToString() + "f" + currPos.facing + ".avi");//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi");//the underscore won't always be there?
             }
             else //b
             {
-                fmvman.QueueVideo(myvidpath + "_" + currPos.node.ToString() + "b" + toFacing + ".avi");//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "b" + toFacing + ".avi");//the underscore won't always be there?
             }
             currPos.facing = toFacing;
         }
@@ -191,12 +191,14 @@ public class baseRoom : MonoBehaviour {
         if (fmvman.playlist.Count > 0)
         {
             Debug.Log("speeeed boost! queue full");
-            var p = fmvman.playlist.ToArray();
-            fmvman.playlist.Clear();
+            var p = fmvman.playlist;
             foreach(var c in p)
             {
                 c.playbackSpeed = 4;
-                fmvman.playlist.Enqueue(c);
+                if(c.player && c.player.GetComponent<UnityEngine.Video.VideoPlayer>())
+                {
+                    c.player.GetComponent<UnityEngine.Video.VideoPlayer>().playbackSpeed = 4;
+                }
             }
             return;
         }
@@ -227,12 +229,23 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void MoveToPosition(int node)
-    {
-    }
-
     protected void QueueVideo(string file)
     {
-        fmvman.QueueVideo(myvidpath+file);
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement" });
+    }
+
+    protected void QueueMovement(string file)
+    {
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement" });
+    }
+
+    protected void PlaySong(string file)
+    {
+        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.SONG, tags = "room" });
+    }
+
+    protected void PlaySound(string file)
+    {
+        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room" });
     }
 }
