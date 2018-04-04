@@ -23,6 +23,7 @@ public class FMVManager : MonoBehaviour
         public System.Action<Command> callback =null;
         public float threshold = 0.24f;
         public float slope = 0.6f;
+        public bool freezeFrame = false;
     };
 
     public Queue<Command> playlist = new Queue<Command>();
@@ -138,6 +139,7 @@ public class FMVManager : MonoBehaviour
         vs.transparentColor = c.transparentColor;
         vs.fadeInTime = c.fadeInTime;
         vs.fadeOutTime = c.fadeOutTime;
+        vs.freezeFrame = c.freezeFrame;
         vs.threshold = c.threshold;
         vs.slope = c.slope;
         vp.url = path + c.file;

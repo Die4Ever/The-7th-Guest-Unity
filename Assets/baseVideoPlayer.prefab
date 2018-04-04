@@ -53,7 +53,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -138,6 +138,9 @@ MonoBehaviour:
   transparentColor: {r: 0, g: 0, b: 0, a: 0}
   baseRenderPlane: {fileID: 1751293791653320, guid: 6c1ff0fb3adff714c93082fcb53f8f82,
     type: 2}
+  threshold: 0.24
+  slope: 0.6
+  freezeFrame: 0
 --- !u!328 &328674524266222350
 VideoPlayer:
   m_ObjectHideFlags: 1

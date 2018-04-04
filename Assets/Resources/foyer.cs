@@ -33,12 +33,30 @@ public class foyer : baseRoom {
         CreateNodeConnectionRotations(5, 'a', 'd');
 
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(front_door, 'a'), type=ClickboxType.DRAMAMASK, clickbox=new Rect(0.2f, 0.1f, 0.5f, 0.8f), callback = f2 });
+
+        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dining_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = enterDining });
     }
 	
 	// Update is called once per frame
 	/*void Update () {
 		
 	}*/
+
+    void enterDining(NodeConnection nc)
+    {
+        fmvman.QueueVideoCallback(myvidpath + "2_d.avi", enterDining2);
+    }
+
+    void enterDining2(FMVManager.Command c)
+    {
+        Debug.Log("enterDining2");
+        fmvman.playlist.Enqueue(new FMVManager.Command { file="DR/dr_mi.avi", type=FMVManager.CommandType.VIDEO, freezeFrame=true, fadeInTime=1 });
+        GameObject go = Instantiate(Resources.Load("diningRoom", typeof(GameObject))) as GameObject;
+        diningRoom f = go.GetComponent<diningRoom>();
+        f.currPos.node = 1;
+        f.currPos.facing = 'c';
+        Destroy(this);
+    }
 
     void f2(NodeConnection nc)
     {

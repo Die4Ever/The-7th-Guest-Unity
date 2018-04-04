@@ -16,11 +16,13 @@ public class baseRoom : MonoBehaviour {
     {
         public int node;
         public char facing;//0=a, 1=b, 2=c, 3=d...?
+        public string filename;
 
-        public RoomPosition(int n, char f)
+        public RoomPosition(int n, char f, string Filename="")
         {
             node = n;
             facing = f;
+            filename = Filename;
         }
     };
     public RoomPosition currPos = new RoomPosition(1, 'a');
@@ -161,28 +163,37 @@ public class baseRoom : MonoBehaviour {
         return null;
     }
 
-    public void Travel(int to, char toFacing)
+    //public void Travel(int to, char toFacing)
+    public void Travel(RoomPosition to)
     {
-        Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.ToString()+"-"+toFacing);
-        if (currPos.node != to)
+        Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.node.ToString()+"-"+to.facing);
+        if(to.filename.Length>0)
+        {
+            Debug.Log("using manual filename "+ myvidpath + to.filename);
+            fmvman.QueueVideo(myvidpath + to.filename);
+        }
+        else if (currPos.node != to.node)
         {
             //Debug.Log("going from node " + currNode.ToString() + " to " + to.ToString());
-            fmvman.QueueVideo(myvidpath + currPos.node.ToString() + "_" + to.ToString() + ".avi");
-            currPos.node = to;
-            currPos.facing = toFacing;
+            fmvman.QueueVideo(myvidpath + currPos.node.ToString() + "_" + to.node.ToString() + ".avi");
+            //currPos.node = to;
+            //currPos.facing = toFacing;
+            //currPos = to;
         }
         else //rotation
         {
-            if (currPos.facing + 1 == toFacing || currPos.facing > toFacing + 1)//f
+            if (currPos.facing + 1 == to.facing || currPos.facing > to.facing + 1)//f
             {
                 fmvman.QueueVideo(myvidpath + "_" + currPos.node.ToString() + "f" + currPos.facing + ".avi");//the underscore won't always be there?
             }
             else //b
             {
-                fmvman.QueueVideo(myvidpath + "_" + currPos.node.ToString() + "b" + toFacing + ".avi");//the underscore won't always be there?
+                fmvman.QueueVideo(myvidpath + "_" + currPos.node.ToString() + "b" + to.facing + ".avi");//the underscore won't always be there?
             }
-            currPos.facing = toFacing;
+            //currPos.facing = toFacing;
+            //currPos = to;
         }
+        currPos = to;
     }
 
     protected void OnClick(Vector2 pos, NodeConnection nc)
@@ -212,7 +223,7 @@ public class baseRoom : MonoBehaviour {
             nc.timesClicked++;
             if(nc.toPos!=null) foreach(var f in nc.toPos)
                 {
-                    if(currPos!=f) Travel(f.node, f.facing);
+                    if(currPos!=f) Travel(f);
                 }
             if(nc.callback!=null)
             {

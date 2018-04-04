@@ -16,6 +16,7 @@ public class videoScript : MonoBehaviour
     public GameObject baseRenderPlane;
     public float threshold = 0.24f;
     public float slope = 0.6f;
+    public bool freezeFrame = false;
     GameObject rp;
 
     // Use this for initialization
@@ -40,7 +41,7 @@ public class videoScript : MonoBehaviour
             if(fadeInTime <= 0)
             {
                 vp.targetCameraAlpha = 1;
-                vp.Play();
+                if(freezeFrame==false) vp.Play();
             }
         }
         else if(fadingOut)
@@ -88,6 +89,7 @@ public class videoScript : MonoBehaviour
         else
         {
             vp.targetCameraAlpha = 1;
+            if(freezeFrame) vp.Pause();
             //vp.targetCamera = Camera.main;
         }
     }
