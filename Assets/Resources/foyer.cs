@@ -9,6 +9,8 @@ public class foyer : baseRoom {
     void Start () {
         BaseInit();
         myvidpath = "FH/f";
+        PlaySong("../music/GU56.ogg");
+        //PlaySong("../music/GU61.ogg");//when to use which song? maybe I need an EnterRoom function to determine where we're coming from and set the song?
         //nodeNames = new string[]{ "null", "front door", "dining door", "kitchen door", "music door", "library door", "upstairs" };
         CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(dining_door, 'b'), new Rect(0, 0.2f, 0.2f, 0.3f));
         CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(upstairs, 'c'), new Rect(0.4f, 0.7f, 0.2f, 0.5f));
@@ -42,7 +44,9 @@ public class foyer : baseRoom {
 
     void f2(NodeConnection nc)
     {
+        PlaySong("../music/GU8.ogg");
         QueueMovement("2_.avi");
+        PlaySong("../music/GU16.ogg");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
     }
@@ -52,7 +56,7 @@ public class foyer : baseRoom {
         Debug.Log("startspiders()");
         currPos.node = spiders;
         PlaySound("GAMWAV/2_s_2.avi");
-        QueueMovement("1_pf.avi");
+        QueueMovement("1_pf.avi", false);
         //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
         GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
         go.GetComponent<basePuzzle>().endPuzzle = endspiders;
@@ -61,7 +65,9 @@ public class foyer : baseRoom {
     void endspiders(string s)
     {
         currPos.node = front_door;
+        PlaySong("../music/GU18.ogg", true);
         QueueMovement("3_0.avi");
+        PlaySong("../music/GU16.ogg");
         QueueMovement("1_pb.avi");
     }
 }

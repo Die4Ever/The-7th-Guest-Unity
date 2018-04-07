@@ -8,11 +8,12 @@ public class intro : baseRoom {
 	void Start () {
         BaseInit();
         PlaySound("../oggs/track1.ogg");
-        fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/vlogo.avi", fadeInTime=1, fadeOutTime=5, playbackSpeed=1 });
-        fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/tripro.avi", fadeInTime = 5, fadeOutTime = 5 });
-        fmvman.QueueVideo(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 5 });
+        fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/vlogo.avi", fadeInTime=1, fadeOutTime=4, playbackSpeed=1 });
+        fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/tripro.avi", fadeInTime = 4, fadeOutTime = 4 });
+        fmvman.QueueVideo(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 2 });
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/title.avi", fadeInTime = 1.0f, fadeOutTime = 0.0f, playbackSpeed = 0.5f });
 
+        PlaySong("../music/GU71.ogg", false);
         QueueVideo("INTRO/o1pa.avi");
         QueueVideo("INTRO/o1tu.avi");
         QueueVideo("INTRO/o3pa.avi");
@@ -20,11 +21,15 @@ public class intro : baseRoom {
         QueueVideo("INTRO/o4pa.avi");
         QueueVideo("INTRO/o4tu.avi");
         QueueVideo("INTRO/o5pa.avi");
+
+        PlaySong("../music/GU72.ogg", false);
         QueueVideo("INTRO/o5tu.avi");
         QueueVideo("INTRO/o6pa.avi");
         QueueVideo("INTRO/o6tu.avi");
         QueueVideo("INTRO/o7pa.avi");
         QueueVideo("INTRO/o7tu.avi");
+
+        PlaySong("../music/GU73.ogg", false);
         QueueVideo("INTRO/o8pa.avi");
         QueueVideo("INTRO/o8tu.avi");
         QueueVideo("INTRO/o9pa.avi");
@@ -32,10 +37,13 @@ public class intro : baseRoom {
         QueueVideo("INTRO/o10pa.avi");
         QueueVideo("INTRO/o10tu.avi");
         QueueVideo("INTRO/o12pa.avi");
+
         QueueVideo("LI/l_in.avi");
         QueueVideo("FH/f_5ba.avi");
         QueueVideo("FH/f5_1.avi");
+        PlaySong("../music/AGU32.ogg", false);
         QueueVideo("FH/f1_.avi");
+        PlaySong("../music/GU56.ogg");
         QueueVideo("FH/f_1fa.avi");
         QueueVideo("FH/f_1fb.avi");
         PlaySound("GAMWAV/1_e_1.avi");

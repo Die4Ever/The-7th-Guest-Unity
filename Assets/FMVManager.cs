@@ -23,11 +23,12 @@ public class FMVManager : MonoBehaviour
         public float countdown=0;
         public float fadeInTime=0;
         public float fadeOutTime=0;
-        public float playbackSpeed = 10;
+        public float playbackSpeed = 1;
         public Color transparentColor = new Color(0, 0, 0, 0);
         public System.Action<Command> callback = null;
         public float threshold = 0.24f;
         public float slope = 0.6f;
+        public bool loop = false;
     };
 
     public List<Command> playlist = new List<Command>();
@@ -104,7 +105,7 @@ public class FMVManager : MonoBehaviour
             var c = vs.command;
             if (HasTags(c.tags, tags))
             {
-                Destroy(vs, 0.05f);
+                Destroy(vs.gameObject, 0.1f);
                 playing_videos.RemoveAt(i);
                 i--;
             }
@@ -127,9 +128,51 @@ public class FMVManager : MonoBehaviour
 
     IEnumerator PlaySong(Command c)
     {
+        if(c.type == CommandType.SONG && currentSong!=null)
+        {
+            if(c.file == currentSong.GetComponent<videoScript>().command.file)
+            {
+                Debug.Log("already playing song " + c.file);
+                yield break;
+            }
+        }
+        Debug.Log("playing " + c.file);
+        videoScript vs;
+        if (c.file.EndsWith(".avi"))
+        {
+            GameObject go = Instantiate(baseVideoPlayer);
+            VideoPlayer vp = go.GetComponent<VideoPlayer>();
+            vs = go.GetComponent<videoScript>();
+            vs.command = c;
+            vp.isLooping = c.loop;
+            vp.url = path + c.file;
+            vp.targetCamera = null;
+            vp.renderMode = VideoRenderMode.APIOnly;
+            if (c.type == CommandType.AUDIO)
+            {
+                playing_audio.Add(go);
+                vs.fadeOutFinished += AudioEndReached;
+                vp.prepareCompleted += AudioPrepared;
+            }
+            if (c.type == CommandType.SONG)
+            {
+                go.GetComponent<AudioSource>().volume *= 0.25f;
+                if (currentSong != null)
+                {
+                    Destroy(currentSong);
+                }
+                currentSong = go;
+                vs.fadeOutFinished += SongEndReached;
+                vp.prepareCompleted += SongPrepared;
+            }
+            vp.Prepare();
+            yield break;
+        }
+
         Debug.Log("test PlaySong");
         AudioSource source = Instantiate(baseVideoPlayer).GetComponent<AudioSource>();
-        videoScript vs = source.GetComponent<videoScript>();
+        vs = source.GetComponent<videoScript>();
+        source.loop = c.loop;
         vs.command = c;
         GameObject player = source.gameObject;
         source.playOnAwake = true;
@@ -141,16 +184,22 @@ public class FMVManager : MonoBehaviour
             {
                 System.Threading.Thread.Sleep(1);
             }
-            source.Play();
             if (c.type == CommandType.SONG)
             {
+                source.volume *= 0.25f;
                 if (currentSong != null)
                 {
                     Destroy(currentSong);
                 }
                 currentSong = source.gameObject;
+                vs.fadeOutFinished += SongEndReached;
             }
-            else if (c.type == CommandType.AUDIO) playing_audio.Add(source.gameObject);
+            else if (c.type == CommandType.AUDIO)
+            {
+                playing_audio.Add(source.gameObject);
+                vs.fadeOutFinished += AudioEndReached;
+            }
+            source.Play();
         }
     }
 
@@ -179,6 +228,7 @@ public class FMVManager : MonoBehaviour
         vs.fadeOutTime = c.fadeOutTime;
         vs.threshold = c.threshold;
         vs.slope = c.slope;
+        vp.isLooping = c.loop;
         vp.url = path + c.file;
         vp.playbackSpeed = c.playbackSpeed;
         vp.prepareCompleted += PrepareCompleted;
@@ -268,12 +318,13 @@ public class FMVManager : MonoBehaviour
 
             if (c.type == CommandType.SONG || c.type == CommandType.AUDIO)
             {
-                if (c.file.EndsWith(".avi"))
+                /*if (c.file.EndsWith(".avi"))
                 {
                     GameObject go = Instantiate(baseVideoPlayer);
                     VideoPlayer vp = go.GetComponent<VideoPlayer>();
                     videoScript vs = go.GetComponent<videoScript>();
                     vs.command = c;
+                    vp.isLooping = c.loop;
                     vp.url = path + c.file;
                     vp.targetCamera = null;
                     vp.renderMode = VideoRenderMode.APIOnly;
@@ -285,6 +336,7 @@ public class FMVManager : MonoBehaviour
                     }
                     if (c.type == CommandType.SONG)
                     {
+                        go.GetComponent<AudioSource>().volume *= 0.25f;
                         if(currentSong!=null)
                         {
                             Destroy(currentSong);
@@ -295,7 +347,7 @@ public class FMVManager : MonoBehaviour
                     }
                     vp.Prepare();
                 }
-                else StartCoroutine(PlaySong(c));
+                else*/ StartCoroutine(PlaySong(c));
                 playlist.RemoveAt(i);
                 i--;
             }
@@ -304,6 +356,13 @@ public class FMVManager : MonoBehaviour
                 LoadVideo(c);
                 playlist.RemoveAt(i);
                 i--;
+            }
+            if(c.type == CommandType.WAITTIME)
+            {
+                c.countdown -= Time.deltaTime;
+                if(c.countdown<=0)
+                    playlist.RemoveAt(i);
+                break;
             }
         }
     }
@@ -371,7 +430,7 @@ public class FMVManager : MonoBehaviour
                 var vs = playing_videos[i].GetComponent<videoScript>();
                 if (vs.done)
                 {
-                    Destroy(vs.gameObject, 0.05f + vs.command.fadeOutTime);
+                    Destroy(vs.gameObject, 0.1f + vs.command.fadeOutTime);
                     playing_videos.RemoveAt(i);
                     i--;
                 }

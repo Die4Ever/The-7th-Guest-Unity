@@ -101,13 +101,13 @@ public class basePuzzle : MonoBehaviour
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
     }
 
-    protected void PlaySong(string file)
+    protected void PlaySong(string file, bool loop = true)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.SONG, tags = "puzzle" });
+        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.SONG, tags = "puzzle", loop = loop });
     }
 
-    protected void PlaySound(string file)
+    protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle" }, false);
+        fmvman.PlayAudio(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle", callback = callback }, wait);
     }
 }

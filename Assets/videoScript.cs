@@ -37,12 +37,13 @@ public class videoScript : MonoBehaviour
     {
         if(done==false && (command.type == FMVManager.CommandType.AUDIO || command.type== FMVManager.CommandType.SONG) )
         {
-            /*AudioSource audioSource = c.player.GetComponent<AudioSource>();
-            if (!audioSource.clip) continue;
-            if (audioSource.clip.loadState == AudioDataLoadState.Loading || audioSource.clip.loadState == AudioDataLoadState.Unloaded) continue;
-            if (audioSource.isPlaying) continue;
-            Debug.Log("detected song end");
-            SongEndReached(c.player);*/
+            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+            if (audioSource && audioSource.clip) if (audioSource.clip.loadState == AudioDataLoadState.Loaded || audioSource.clip.loadState == AudioDataLoadState.Failed) if (audioSource.isPlaying == false)
+                    {
+                        Debug.Log("detected song end "+command.file);
+                        EndReached(vp);
+                        prepared = true;
+                    }
         }
         if (prepared == false) return;
 

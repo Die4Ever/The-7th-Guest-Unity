@@ -16,7 +16,7 @@ public class spiders : basePuzzle {
         BaseInit();
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
-
+        PlaySong("../music/GU8.ogg");
         AddPuzzlePoint("a", new Rect(0.46f, 0.82f, 0.05f, 0.05f), ClickPoint);
         AddPuzzlePoint("b", new Rect(0.33f, 0.72f, 0.05f, 0.05f), ClickPoint);
         AddPuzzlePoint("c", new Rect(0.28f, 0.49f, 0.05f, 0.05f), ClickPoint);
@@ -84,8 +84,18 @@ public class spiders : basePuzzle {
             if(spot==(currSpider+3)%8 || spot==(currSpider+5)%8 )
             {
                 fmvman.ClearPlayingVideos("spider-" + IntToSpotName(currSpider));
-                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", SpiderArrived, new Color(0, 0, 0, 1));
                 spiderSpots[spot] = true;
+                int spidersCount = 0;
+                foreach (var s in spiderSpots)
+                {
+                    if (s) spidersCount++;
+                }
+                System.Action<FMVManager.Command> callback = SpiderArrived;
+                if (spidersCount == 7)
+                {
+                    callback = SpiderArrivedWin;
+                }
+                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", callback, new Color(0, 0, 0, 1));
                 currSpider = -1;
             }
         }
@@ -93,17 +103,18 @@ public class spiders : basePuzzle {
 
     void SpiderArrived(FMVManager.Command c)
     {
-        int spidersCount = 0;
-        foreach (var s in spiderSpots)
-        {
-            if (s) spidersCount++;
-        }
-        if (spidersCount == 7)
-        {
-            Debug.Log("You Win!");
-            PlaySound("GAMWAV/gen_s_2.avi");
-            if (endPuzzle != null) endPuzzle("spiders");
-            Destroy(this);
-        }
+
+    }
+
+    void SpiderArrivedWin(FMVManager.Command c)
+    {
+        Debug.Log("You Win!");
+        PlaySound("GAMWAV/gen_s_2.avi", EndCurses, true);//curses!
+    }
+
+    void EndCurses(FMVManager.Command c)
+    {
+        if (endPuzzle != null) endPuzzle("spiders");
+        Destroy(this);
     }
 }

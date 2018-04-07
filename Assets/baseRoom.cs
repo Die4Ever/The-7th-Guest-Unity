@@ -229,19 +229,19 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void QueueVideo(string file)
+    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement" });
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement", callback = callback });
     }
 
-    protected void QueueMovement(string file)
+    protected void QueueMovement(string file, bool wait=true)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement" });
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement" }, wait);
     }
 
-    protected void PlaySong(string file)
+    protected void PlaySong(string file, bool loop=true)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.SONG, tags = "room" });
+        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.SONG, tags = "room", loop = loop });
     }
 
     protected void PlaySound(string file)
