@@ -64,8 +64,10 @@ public class basePuzzle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        Vector2 pos = fmvman.ScreenToVideo(Input.mousePosition);//Camera.main.ScreenToViewportPoint(Input.mousePosition);
         PuzzlePoint pp = GetPuzzlePoint(pos);
+        int puzzle_videos = fmvman.CountPlayingVideos("puzzle");
+        if (puzzle_videos > 0) pp = null;
         if (pp != null) SetCursor(fmvman.blueeye);
         else SetCursor(fmvman.handwag);
         if (Input.GetMouseButtonDown(0))
@@ -91,9 +93,9 @@ public class basePuzzle : MonoBehaviour
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
     }
 
-    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="")
+    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="", bool wait=false)
     {
-        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback=callback, transparentColor=transparentColor, type = FMVManager.CommandType.OVERLAY, tags=tags+" puzzle" }, false);
+        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback=callback, transparentColor=transparentColor, type = FMVManager.CommandType.OVERLAY, tags=tags+" puzzle" }, wait);
     }
 
     protected void QueueMovement(string file)
@@ -106,8 +108,12 @@ public class basePuzzle : MonoBehaviour
         fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.SONG, tags = "puzzle", loop = loop });
     }
 
-    protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false)
+    protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false, bool clear=true)
     {
+        if(clear)
+        {
+            fmvman.ClearPlayingAudio("puzzle");
+        }
         fmvman.PlayAudio(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle", callback = callback }, wait);
     }
 }

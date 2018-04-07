@@ -62,6 +62,8 @@ public class spiders : basePuzzle {
 
     void ClickPoint(PuzzlePoint pp)
     {
+        if (pp == null) return;
+
         int spot = SpotNameToInt(pp.name);
         if(spiderSpots[spot])
         {
@@ -75,8 +77,8 @@ public class spiders : basePuzzle {
                 Debug.Log("spot invalid");
                 return;
             }
-            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0,0,0,1), "spider-" + pp.name);
-            PlaySound(whichway);
+            if(fmvman.playing_audio.Count==0) PlaySound(whichway);
+            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0, 0, 0, 1), "spider-" + pp.name, true);
             currSpider = spot;
         } else
         {
@@ -95,6 +97,9 @@ public class spiders : basePuzzle {
                 {
                     callback = SpiderArrivedWin;
                 }
+                if(spidersCount == 2) PlaySound("GAMWAV/2_s_3.avi");
+                if(spidersCount == 4) PlaySound("GAMWAV/2_e_4.avi");
+                if (spidersCount == 6) PlaySound("GAMWAV/2_e_3.avi");
                 QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", callback, new Color(0, 0, 0, 1));
                 currSpider = -1;
             }

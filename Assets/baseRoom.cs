@@ -35,6 +35,7 @@ public class baseRoom : MonoBehaviour {
         public RoomPosition[] toPos;
         public int timesClicked = 0;
         public System.Action<NodeConnection> callback = null;
+        public float speed = 1;
     };
     protected List<NodeConnection> nodeConnections;
 
@@ -69,12 +70,12 @@ public class baseRoom : MonoBehaviour {
 
     protected void Update()
     {
-        if(fmvman.playlist.Count>0)
+        if(fmvman.playlist.Count>0 || fmvman.CountPlayingVideos("") > 0)
         {
             SetCursor(fmvman.handwag);
             return;
         }
-        Vector2 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        Vector2 pos = fmvman.ScreenToVideo(Input.mousePosition);// Camera.main.ScreenToViewportPoint(Input.mousePosition);
         var nc = GetNodeConnection(pos);
         if (nc == null)
         {
@@ -96,15 +97,44 @@ public class baseRoom : MonoBehaviour {
         {
             SetCursor(fmvman.handbeckon);
         }
-        if (Input.GetMouseButtonDown(0))
+
+        if (Input.GetAxis("Horizontal") < -0.2f)
+        {
+            Vector2 fakeClickPos = new Vector2(-6, 0.5f);
+            nc = GetNodeConnection(fakeClickPos);
+            OnClick(fakeClickPos, nc);
+        } else if (Input.GetAxis("Horizontal") > 0.2f)
+        {
+            Vector2 fakeClickPos = new Vector2(6, 0.5f);
+            nc = GetNodeConnection(fakeClickPos);
+            OnClick(fakeClickPos, nc);
+        }
+        else if (Input.GetAxis("Vertical") < -0.2f)
+        {
+            Vector2 fakeClickPos = new Vector2(0.5f, -6);//need to create the way bottom clickbox for turning around
+            nc = GetNodeConnection(fakeClickPos);
+            OnClick(fakeClickPos, nc);
+        }
+        else if (Input.GetAxis("Vertical") > 0.2f)
+        {
+            Vector2 fakeClickPos = new Vector2(0.5f, 0.5f);//center of the screen
+            nc = GetClosestNodeConnection(fakeClickPos);
+            OnClick(fakeClickPos, nc);
+        }
+
+        else if (Input.GetMouseButtonDown(0))
         {
             OnClick(pos, nc);
         }
+        if(Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("right clicky! " + pos.ToString("0.00") + " from " + currPos.node.ToString() + " " + currPos.facing);
+        }
     }
 
-    protected void CreateNodeConnection(RoomPosition fromPos, RoomPosition toPos, Rect clickbox, RoomPosition[] toPosArray=null)
+    protected void CreateNodeConnection(RoomPosition fromPos, RoomPosition toPos, Rect clickbox, RoomPosition[] toPosArray=null, float speed=1)
     {
-        var nc = new NodeConnection { fromPos=fromPos, clickbox = clickbox, type=ClickboxType.MOVE };
+        var nc = new NodeConnection { fromPos=fromPos, clickbox = clickbox, type=ClickboxType.MOVE, speed = speed };
         if(toPosArray != null)
         {
             nc.toPos = toPosArray;
@@ -127,20 +157,39 @@ public class baseRoom : MonoBehaviour {
 
     protected void CreateNodeConnectionRotations(int from, char fromFacing, char toFacing)
     {
-        Rect left = new Rect(0, 0, 0.02f, 1.0f);
-        Rect right = new Rect(0.98f, 0, 0.02f, 1.0f);
+        Rect left = new Rect(-10, 0, 10.02f, 1.0f);
+        Rect right = new Rect(0.98f, 0, 10.02f, 1.0f);
+        Rect turnaround = new Rect(0, -10, 1, 5);
+        if(false)//if disable click to turn, and only use arrow keys or WASD...will need a config setting for this later
+        {
+            left = new Rect(-5, 0, 10.02f, 1.0f);
+            right = new Rect(5, 0, 10.02f, 1.0f);
+        }
 
         for (char f=fromFacing; f<toFacing;f++)
         {
             RoomPosition posLeft = new RoomPosition(from, f);
             RoomPosition posRight = new RoomPosition(from, (char)((int)f + 1));
+            RoomPosition posLeftLeft = new RoomPosition(from, (char)((int)f - 1));
+            if ((int)posLeftLeft.facing < (int)fromFacing) posLeftLeft.facing = toFacing;
             CreateNodeConnection(posRight, posLeft, left);
             CreateNodeConnection(posLeft, posRight, right);
+            //CreateNodeConnection(posRight, posLeftLeft, turnaround);
+            if(toFacing-fromFacing>2) CreateNodeConnection(posRight, null, turnaround, new RoomPosition[] { posLeft, posLeftLeft }, 2);
         }
         RoomPosition fromPos = new RoomPosition(from, fromFacing);
         RoomPosition toPos = new RoomPosition(from, toFacing);
         CreateNodeConnection(fromPos, toPos, left);
         CreateNodeConnection(toPos, fromPos, right);
+
+        if (toFacing - fromFacing > 2)
+        {
+            RoomPosition posLeft = new RoomPosition(from, (char)((int)fromFacing - 1));
+            if ((int)posLeft.facing < (int)fromFacing) posLeft.facing = toFacing;
+            RoomPosition posLeftLeft = new RoomPosition(from, (char)((int)posLeft.facing - 1));
+            if ((int)posLeft.facing < (int)fromFacing) posLeftLeft.facing = toFacing;
+            CreateNodeConnection(fromPos, null, turnaround, new RoomPosition[] { posLeft, posLeftLeft }, 2);
+        }
     }
 
     void MakeClickboxes()
@@ -161,13 +210,37 @@ public class baseRoom : MonoBehaviour {
         return null;
     }
 
-    public void Travel(int to, char toFacing)
+    protected NodeConnection GetClosestNodeConnection(Vector2 pos)
+    {
+        float closestDist = 9999;
+        NodeConnection closest = null;
+
+        foreach (var nc in nodeConnections)
+        {
+            //Debug.Log(nc.ToString());
+            if (nc.fromPos.node == currPos.node && nc.fromPos.facing == currPos.facing)
+            {
+                if(nc.clickbox.Contains(pos)) return nc;
+                float dx = Mathf.Min( Mathf.Abs(pos.x-nc.clickbox.xMin), Mathf.Abs(pos.x - nc.clickbox.xMax));
+                float dy = Mathf.Min(Mathf.Abs(pos.y - nc.clickbox.yMin), Mathf.Abs(pos.y - nc.clickbox.yMax));
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                if(dist<closestDist)
+                {
+                    closestDist = dist;
+                    closest = nc;
+                }
+            }
+        }
+        return closest;
+    }
+
+    public void Travel(int to, char toFacing, float speed)
     {
         Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.ToString()+"-"+toFacing);
         if (currPos.node != to)
         {
             //Debug.Log("going from node " + currNode.ToString() + " to " + to.ToString());
-            QueueMovement(currPos.node.ToString() + "_" + to.ToString() + ".avi");
+            QueueMovement(currPos.node.ToString() + "_" + to.ToString() + ".avi", true, speed);
             currPos.node = to;
             currPos.facing = toFacing;
         }
@@ -175,11 +248,11 @@ public class baseRoom : MonoBehaviour {
         {
             if (currPos.facing + 1 == toFacing || currPos.facing > toFacing + 1)//f
             {
-                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi");//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, speed);//the underscore won't always be there?
             }
             else //b
             {
-                QueueMovement("_" + currPos.node.ToString() + "b" + toFacing + ".avi");//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "b" + toFacing + ".avi", true, speed);//the underscore won't always be there?
             }
             currPos.facing = toFacing;
         }
@@ -187,10 +260,10 @@ public class baseRoom : MonoBehaviour {
 
     protected void OnClick(Vector2 pos, NodeConnection nc)
     {
-        Debug.Log("clicky! "+pos.ToString()+" from "+ currPos.node.ToString()+" "+ currPos.facing);
+        Debug.Log("clicky! "+pos.ToString("0.00")+" from "+ currPos.node.ToString()+" "+ currPos.facing);
         if (fmvman.playlist.Count > 0)
         {
-            Debug.Log("speeeed boost! queue full");
+            //Debug.Log("speeeed boost! queue full");
             /*var p = fmvman.playing_videos;
             foreach(var c in p)
             {
@@ -200,7 +273,7 @@ public class baseRoom : MonoBehaviour {
                     c.player.GetComponent<UnityEngine.Video.VideoPlayer>().playbackSpeed = 4;
                 }
             }*/
-            return;
+            //return;
         }
         /*if(fmvman.playlist.Count > 3)
         {
@@ -214,7 +287,7 @@ public class baseRoom : MonoBehaviour {
             nc.timesClicked++;
             if(nc.toPos!=null) foreach(var f in nc.toPos)
                 {
-                    if(currPos!=f) Travel(f.node, f.facing);
+                    if(currPos!=f) Travel(f.node, f.facing, nc.speed);
                 }
             if(nc.callback!=null)
             {
@@ -229,14 +302,14 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null)
+    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement", callback = callback });
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement", callback = callback, fadeInTime=fadeIn });
     }
 
-    protected void QueueMovement(string file, bool wait=true)
+    protected void QueueMovement(string file, bool wait=true, float speed=1)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement" }, wait);
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement", playbackSpeed = speed }, wait);
     }
 
     protected void PlaySong(string file, bool loop=true)

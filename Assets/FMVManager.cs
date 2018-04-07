@@ -40,6 +40,8 @@ public class FMVManager : MonoBehaviour
     {
         path = "file://" + Application.dataPath + "/../upscaled/";
         Application.runInBackground = true;
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 1;
         Debug.Log("FMVManager::Start()");
 
         handwag = Instantiate(Resources.Load("cursors/wagging-hand", typeof(Texture2D))) as Texture2D;
@@ -54,11 +56,16 @@ public class FMVManager : MonoBehaviour
     public baseRoom SwitchRoom(string roomName, int node, char facing)
     {
         Debug.Log("SwitchRoom("+roomName+")");
+        if(currRoom==null)
+        {
+            currRoom = GameObject.FindObjectOfType<baseRoom>();
+            Debug.Log("found room " + currRoom.name);
+        }
         GameObject go = Instantiate(Resources.Load(roomName, typeof(GameObject))) as GameObject;
         baseRoom r = go.GetComponent<baseRoom>();
         r.currPos.node = node;
         r.currPos.facing = facing;
-        Destroy(currRoom);
+        Destroy(currRoom.gameObject);
         currRoom = r;
         return r;
     }
@@ -97,6 +104,44 @@ public class FMVManager : MonoBehaviour
         else return false;
     }
 
+    public Vector2 ScreenToVideo(Vector2 pos)
+    {
+        Vector2 v = Camera.main.ScreenToViewportPoint(pos);
+        float ratio = ((float)Screen.width) / ((float)Screen.height);
+        float videoRatio = 640.0f / 320.0f;//the game is 2:1 aka 18:9
+        Vector2 ret = v;
+        if(ratio < videoRatio)//letterbox, trim the height
+        {
+            ret.y *= videoRatio / ratio;
+            ret.y -= (videoRatio / ratio - 1.0f) / 2.0f;
+            //Debug.Log("letterbox");
+        } else if(ratio > videoRatio)//pillarbox, trim the width
+        {
+            ret.x *= ratio / videoRatio;
+            ret.x -= (ratio / videoRatio - 1.0f) / 2.0f;
+            //Debug.Log("pillarbox");
+        } else //perfect fit? return v?
+        {
+            //Debug.Log("perfect fit?");
+        }
+        return ret;
+    }
+
+    public void ClearPlayingAudio(string tags)
+    {
+        for (int i = 0; i < playing_audio.Count; i++)
+        {
+            var vs = playing_audio[i].GetComponent<videoScript>();
+            var c = vs.command;
+            if (HasTags(c.tags, tags))
+            {
+                Destroy(vs.gameObject, 0.1f);
+                playing_audio.RemoveAt(i);
+                i--;
+            }
+        }
+
+    }
     public void ClearPlayingVideos(string tags)
     {
         for (int i = 0; i < playing_videos.Count; i++)
@@ -110,6 +155,17 @@ public class FMVManager : MonoBehaviour
                 i--;
             }
         }
+    }
+
+    public int CountPlayingVideos(string tags)
+    {
+        int videos = 0;
+        foreach (var v in playing_videos)
+        {
+            var vs = v.GetComponent<videoScript>();
+            if (vs.done == false && HasTags(vs.command.tags, tags)) videos++;
+        }
+        return videos;
     }
 
     public void ClearQueue(string tags)
