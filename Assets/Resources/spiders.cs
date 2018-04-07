@@ -11,7 +11,6 @@ public class spiders : basePuzzle {
     // Use this for initialization
     int currSpider = -1;
     bool[] spiderSpots;
-    FMVManager currFMV = null;
 
     void Start () {
         BaseInit();
@@ -69,29 +68,27 @@ public class spiders : basePuzzle {
             Debug.Log("spot already filled");
             return;
         }
-        /*if (currSpider == -1)
+        if (currSpider == -1)
         {
             if ( spiderSpots[(spot + 3) % 8] && spiderSpots[(spot + 5) % 8] )
             {
                 Debug.Log("spot invalid");
                 return;
             }
-            currFMV = Instantiate(fmvman);
-            fmvmen.Add(currFMV);
-            currFMV.baseVideoPlayer=fmvman.baseVideoPlayer;
-            currFMV.QueueOverlayCallback(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0,0,0,1));
-            currFMV.QueueSong(whichway);
+            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0,0,0,1), "spider-" + pp.name);
+            PlaySound(whichway);
             currSpider = spot;
         } else
         {
             //skipping 3s and skipping 5s, perhaps that's how one derives the spiders for this starry tale
             if(spot==(currSpider+3)%8 || spot==(currSpider+5)%8 )
             {
-                currFMV.QueueOverlayCallback(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", SpiderArrived, new Color(0, 0, 0, 1));
+                fmvman.ClearPlayingVideos("spider-" + IntToSpotName(currSpider));
+                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", SpiderArrived, new Color(0, 0, 0, 1));
                 spiderSpots[spot] = true;
                 currSpider = -1;
             }
-        }*/
+        }
     }
 
     void SpiderArrived(FMVManager.Command c)

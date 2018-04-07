@@ -91,6 +91,11 @@ public class basePuzzle : MonoBehaviour
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
     }
 
+    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="")
+    {
+        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback=callback, transparentColor=transparentColor, type = FMVManager.CommandType.OVERLAY, tags=tags+" puzzle" }, false);
+    }
+
     protected void QueueMovement(string file)
     {
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
@@ -103,6 +108,6 @@ public class basePuzzle : MonoBehaviour
 
     protected void PlaySound(string file)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle" });
+        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.AUDIO, tags = "puzzle" }, false);
     }
 }

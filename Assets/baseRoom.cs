@@ -191,7 +191,7 @@ public class baseRoom : MonoBehaviour {
         if (fmvman.playlist.Count > 0)
         {
             Debug.Log("speeeed boost! queue full");
-            var p = fmvman.playlist;
+            /*var p = fmvman.playing_videos;
             foreach(var c in p)
             {
                 c.playbackSpeed = 4;
@@ -199,7 +199,7 @@ public class baseRoom : MonoBehaviour {
                 {
                     c.player.GetComponent<UnityEngine.Video.VideoPlayer>().playbackSpeed = 4;
                 }
-            }
+            }*/
             return;
         }
         /*if(fmvman.playlist.Count > 3)
@@ -246,6 +246,6 @@ public class baseRoom : MonoBehaviour {
 
     protected void PlaySound(string file)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room" });
+        fmvman.PlayAudio(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room" }, false);
     }
 }

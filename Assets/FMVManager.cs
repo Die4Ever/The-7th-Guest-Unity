@@ -17,13 +17,13 @@ public class FMVManager : MonoBehaviour
     public class Command
     {
         public CommandType type=CommandType.VIDEO;
-        public GameObject player = null;
+        //public GameObject player = null;
         public string file;
         public string tags = "";
         public float countdown=0;
         public float fadeInTime=0;
         public float fadeOutTime=0;
-        public float playbackSpeed = 1;
+        public float playbackSpeed = 10;
         public Color transparentColor = new Color(0, 0, 0, 0);
         public System.Action<Command> callback = null;
         public float threshold = 0.24f;
@@ -31,6 +31,8 @@ public class FMVManager : MonoBehaviour
     };
 
     public List<Command> playlist = new List<Command>();
+    public List<GameObject> playing_videos = new List<GameObject>();
+    public List<GameObject> playing_audio = new List<GameObject>();
  
     // Use this for initialization
     void Start()
@@ -88,14 +90,35 @@ public class FMVManager : MonoBehaviour
         if (wait) playlist.Add(new Command { type = CommandType.WAITFOROVERLAY });
     }
 
+    public bool HasTags(string haystack, string needle)
+    {
+        if (haystack.Contains(needle)) return true;//later make this smarter, to accept space separated classes
+        else return false;
+    }
+
+    public void ClearPlayingVideos(string tags)
+    {
+        for (int i = 0; i < playing_videos.Count; i++)
+        {
+            var vs = playing_videos[i].GetComponent<videoScript>();
+            var c = vs.command;
+            if (HasTags(c.tags, tags))
+            {
+                Destroy(vs, 0.05f);
+                playing_videos.RemoveAt(i);
+                i--;
+            }
+        }
+    }
+
     public void ClearQueue(string tags)
     {
         for(int i=0;i<playlist.Count;i++)
         {
-            if(playlist[i].tags.Contains(tags))
+            if(HasTags(playlist[i].tags, tags))
             {
-                if (playlist[i].player)
-                    Destroy(playlist[i].player);
+                //if (playlist[i].player)
+                    //Destroy(playlist[i].player);
                 playlist.RemoveAt(i);
                 i--;
             }
@@ -106,7 +129,9 @@ public class FMVManager : MonoBehaviour
     {
         Debug.Log("test PlaySong");
         AudioSource source = Instantiate(baseVideoPlayer).GetComponent<AudioSource>();
-        c.player = source.gameObject;
+        videoScript vs = source.GetComponent<videoScript>();
+        vs.command = c;
+        GameObject player = source.gameObject;
         source.playOnAwake = true;
         using (var www = new WWW(path + c.file))
         {
@@ -117,7 +142,15 @@ public class FMVManager : MonoBehaviour
                 System.Threading.Thread.Sleep(1);
             }
             source.Play();
-            currentSong = source.gameObject;
+            if (c.type == CommandType.SONG)
+            {
+                if (currentSong != null)
+                {
+                    Destroy(currentSong);
+                }
+                currentSong = source.gameObject;
+            }
+            else if (c.type == CommandType.AUDIO) playing_audio.Add(source.gameObject);
         }
     }
 
@@ -140,6 +173,7 @@ public class FMVManager : MonoBehaviour
         //}
         VideoPlayer vp = go.GetComponent<VideoPlayer>();
         videoScript vs = go.GetComponent<videoScript>();
+        vs.command = c;
         vs.transparentColor = c.transparentColor;
         vs.fadeInTime = c.fadeInTime;
         vs.fadeOutTime = c.fadeOutTime;
@@ -151,6 +185,7 @@ public class FMVManager : MonoBehaviour
         //vp.loopPointReached += EndReached;
         vs.fadeOutFinished += EndReached;
         vp.Prepare();
+        playing_videos.Add(go);
         return go;
     }
 
@@ -160,10 +195,10 @@ public class FMVManager : MonoBehaviour
         PlaylistProcess();
     }
 
-    bool CheckWait(CommandType type, int slot)
+    bool CheckWait(CommandType type, int slot, Command c)
     {
         //Debug.Log("CheckWait("+type.ToString()+", "+slot.ToString()+")");
-        for(int i=0;i<slot;i++)
+        /*for(int i=0;i<slot;i++)
         {
             if (playlist[i].type != type) continue;
             if(playlist[i].player==null || playlist[i].player.GetComponent<videoScript>().done==false)
@@ -171,7 +206,24 @@ public class FMVManager : MonoBehaviour
                 //Debug.Log("waiting on " + playlist[i].file+", "+playlist[i].player.ToString()+", done=="+ playlist[i].player.GetComponent<videoScript>().done.ToString());
                 return false;
             }
+        }*/
+        if (type == CommandType.VIDEO || type==CommandType.OVERLAY)
+        {
+            foreach(var v in playing_videos)
+            {
+                var vs = v.GetComponent<videoScript>();
+                if ( vs.done==false && vs.command.type==type && HasTags(vs.command.tags, c.tags)) return false;
+            }
         }
+        if (type == CommandType.AUDIO)
+        {
+            foreach (var a in playing_audio)
+            {
+                var vs = a.GetComponent<videoScript>();
+                if (HasTags(vs.command.tags, c.tags)) return false;
+            }
+        }
+        if (type == CommandType.SONG && currentSong != null && HasTags(currentSong.GetComponent<videoScript>().command.tags, c.tags) ) return false;//I don't see why I would use tags on the current song
         Debug.Log("CheckWait going forwards!");
         /*for (int i = 0; i < slot; i++)
         {
@@ -181,6 +233,7 @@ public class FMVManager : MonoBehaviour
             i--;
             slot--;
         }*/
+        if (c.callback != null) c.callback(c);
         playlist.RemoveAt(slot);
         return true;
     }
@@ -194,103 +247,87 @@ public class FMVManager : MonoBehaviour
             Command c = playlist[i];
             if (c.type == CommandType.WAITFORVIDEO)
             {
-                CheckWait(CommandType.VIDEO, i);
+                CheckWait(CommandType.VIDEO, i, c);
                 break;
             }
             if (c.type == CommandType.WAITFORSONG)
             {
-                CheckWait(CommandType.SONG, i);
+                CheckWait(CommandType.SONG, i, c);
                 break;
             }
             if (c.type == CommandType.WAITFORAUDIO)
             {
-                CheckWait(CommandType.AUDIO, i);
+                CheckWait(CommandType.AUDIO, i, c);
                 break;
             }
             if (c.type == CommandType.WAITFOROVERLAY)
             {
-                CheckWait(CommandType.OVERLAY, i);
+                CheckWait(CommandType.OVERLAY, i, c);
                 break;
             }
 
             if (c.type == CommandType.SONG || c.type == CommandType.AUDIO)
             {
-                if(c.player!=null)
-                {
-                    AudioSource audioSource = c.player.GetComponent<AudioSource>();
-                    if (!audioSource.clip) continue;
-                    if (audioSource.clip.loadState == AudioDataLoadState.Loading || audioSource.clip.loadState == AudioDataLoadState.Unloaded) continue;
-                    if (audioSource.isPlaying) continue;
-                    Debug.Log("detected song end");
-                    SongEndReached(c.player);
-                    //playlist.RemoveAt(i);
-                    continue;
-                }
                 if (c.file.EndsWith(".avi"))
                 {
                     GameObject go = Instantiate(baseVideoPlayer);
                     VideoPlayer vp = go.GetComponent<VideoPlayer>();
                     videoScript vs = go.GetComponent<videoScript>();
+                    vs.command = c;
                     vp.url = path + c.file;
                     vp.targetCamera = null;
                     vp.renderMode = VideoRenderMode.APIOnly;
-                    vs.fadeOutFinished += SongEndReached;
-                    vp.prepareCompleted += SongPrepared;
+                    if (c.type == CommandType.AUDIO)
+                    {
+                        playing_audio.Add(go);
+                        vs.fadeOutFinished += AudioEndReached;
+                        vp.prepareCompleted += AudioPrepared;
+                    }
+                    if (c.type == CommandType.SONG)
+                    {
+                        if(currentSong!=null)
+                        {
+                            Destroy(currentSong);
+                        }
+                        currentSong = go;
+                        vs.fadeOutFinished += SongEndReached;
+                        vp.prepareCompleted += SongPrepared;
+                    }
                     vp.Prepare();
-                    c.player = go;
                 }
                 else StartCoroutine(PlaySong(c));
-                //playlist.RemoveAt(0);
+                playlist.RemoveAt(i);
+                i--;
             }
-            if (c.type == CommandType.VIDEO)
+            if (c.type == CommandType.VIDEO || c.type == CommandType.OVERLAY)
             {
-                if (c.player != null)
-                {
-                    var vs = c.player.GetComponent<videoScript>();
-                    /*if (vs && vs.done)
-                    {
-                        //if (c.callback!=null) c.callback(c);
-                        //Destroy(vs, 0.25f);
-                        //playlist.RemoveAt(i);
-                        break;
-                    }*/
-                    continue;
-                }
-                c.player = LoadVideo(c);
-                //break;
-                //playlist.RemoveAt(0);
+                LoadVideo(c);
+                playlist.RemoveAt(i);
+                i--;
             }
         }
     }
 
     void EndReached(VideoPlayer vp)
     {
-        //Debug.Log("playlist count == "+playlist.Count.ToString());
-        /*if(playlist.Count>0 && playlist[0].type==CommandType.WAITFORVIDEO)
-        {
-            Command c = playlist[0];
-            playlist.RemoveAt(0);
-            if (c.callback!=null) c.callback(c);
-        }*/
-        //if(vp!=movementPlayer) Destroy(vp.gameObject);
-
         if (vp == null) return;
-        for (int i = 0; i < playlist.Count; i++)
+        for (int i = 0; i < playing_videos.Count; i++)
         {
-            var c = playlist[i];
-            if (c.type == CommandType.VIDEO)
+            var vs = playing_videos[i].GetComponent<videoScript>();
+            var c = vs.command;
+            if (playing_videos[i] == vp.gameObject)
             {
-                if (c.player == vp)
-                {
-                    if (c.callback != null) c.callback(c);
-                    //playlist.RemoveAt(i);
-                    break;
-                }
+                if (c.callback != null) c.callback(c);
+                break;
             }
         }
     }
 
-    
+    void AudioEndReached(VideoPlayer vp)
+    {
+        SongEndReached(vp.gameObject);
+    }
+
     void SongEndReached(VideoPlayer vp)
     {
         SongEndReached(vp.gameObject);
@@ -300,23 +337,27 @@ public class FMVManager : MonoBehaviour
     {
         //Debug.Log("playlist count == " + playlist.Count.ToString());
         if (s == null) return;
-        for(int i=0;i<playlist.Count;i++)
+        for(int i=0;i<playing_audio.Count;i++)
         {
-            var c = playlist[i];
+            var go = playing_audio[i];
+            var vs = go.GetComponent<videoScript>();
+            var c = vs.command;
             if(c.type == CommandType.SONG || c.type==CommandType.AUDIO)
             {
-                if(c.player==s)
+                if(go==s)
                 {
                     if (c.callback != null) c.callback(c);
-                    playlist.RemoveAt(i);
+                    playing_audio.RemoveAt(i);
                     i--;
                 }
-            }/* else if(c.type==CommandType.WAITFORSONG || c.type==CommandType.WAITFORAUDIO)
-            {
-                if (c.callback != null) c.callback(c);
-                playlist.RemoveAt(i);
-                i--;
-            }*/
+            }
+        }
+        if(currentSong==s)
+        {
+            currentSong = null;
+            var vs = s.GetComponent<videoScript>();
+            var c = vs.command;
+            if (c.callback != null) c.callback(c);
         }
         if(s!=null) Destroy(s);
     }
@@ -325,6 +366,16 @@ public class FMVManager : MonoBehaviour
     {
         //vp.targetCameraAlpha = 0;
         vp.Play();
+        if (vp.GetComponent<videoScript>().command.type != CommandType.OVERLAY) for (int i = 0; i < playing_videos.Count; i++)
+            {
+                var vs = playing_videos[i].GetComponent<videoScript>();
+                if (vs.done)
+                {
+                    Destroy(vs.gameObject, 0.05f + vs.command.fadeOutTime);
+                    playing_videos.RemoveAt(i);
+                    i--;
+                }
+            }
         /*for(int i=0;i<playlist.Count;i++)
         {
 
@@ -334,16 +385,30 @@ public class FMVManager : MonoBehaviour
 
     void SongPrepared(VideoPlayer vp)
     {
+        //if (currentSong != null) Destroy(currentSong);
         currentSong = vp.gameObject;
+        vp.Play();
+    }
+
+    void AudioPrepared(VideoPlayer vp)
+    {
         vp.Play();
     }
 
     private void OnDestroy()
     {
         if (currentSong) Destroy(currentSong);
-        foreach(var v in playlist)
+        currentSong = null;
+        foreach(var v in playing_videos)
         {
-            if (v.player) Destroy(v.player);
+            Destroy(v);
         }
+        foreach (var a in playing_audio)
+        {
+            Destroy(a);
+        }
+        playing_videos.Clear();
+        playing_audio.Clear();
+        playlist.Clear();
     }
 }

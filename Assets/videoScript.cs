@@ -19,6 +19,7 @@ public class videoScript : MonoBehaviour
     public float threshold = 0.24f;
     public float slope = 0.6f;
     GameObject rp;
+    public FMVManager.Command command;
 
     // Use this for initialization
     void Start()
@@ -34,6 +35,15 @@ public class videoScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(done==false && (command.type == FMVManager.CommandType.AUDIO || command.type== FMVManager.CommandType.SONG) )
+        {
+            /*AudioSource audioSource = c.player.GetComponent<AudioSource>();
+            if (!audioSource.clip) continue;
+            if (audioSource.clip.loadState == AudioDataLoadState.Loading || audioSource.clip.loadState == AudioDataLoadState.Unloaded) continue;
+            if (audioSource.isPlaying) continue;
+            Debug.Log("detected song end");
+            SongEndReached(c.player);*/
+        }
         if (prepared == false) return;
 
         if (fadeInTime > 0)
