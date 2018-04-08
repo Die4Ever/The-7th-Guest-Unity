@@ -17,14 +17,14 @@ public class spiders : basePuzzle {
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
         PlaySong("../music/GU8.ogg");
-        AddPuzzlePoint("a", new Rect(0.46f, 0.82f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("b", new Rect(0.33f, 0.72f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("c", new Rect(0.28f, 0.49f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("d", new Rect(0.32f, 0.26f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("e", new Rect(0.46f, 0.15f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("f", new Rect(0.6f, 0.25f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("g", new Rect(0.66f, 0.49f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("h", new Rect(0.6f, 0.72f, 0.05f, 0.05f), ClickPoint);
+        AddPuzzlePointCentered("a", new Rect(0.48f, 0.89f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("b", new Rect(0.35f, 0.78f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("c", new Rect(0.29f, 0.54f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("d", new Rect(0.34f, 0.27f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("e", new Rect(0.48f, 0.15f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("f", new Rect(0.63f, 0.27f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("g", new Rect(0.67f, 0.54f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("h", new Rect(0.61f, 0.79f, 0.1f, 0.15f), ClickPoint);
         spiderSpots = new bool[8];
         Debug.Log(spiderSpots[0]);
     }

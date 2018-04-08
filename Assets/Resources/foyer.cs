@@ -28,7 +28,7 @@ public class foyer : baseRoom {
         CreateNodeConnection(new RoomPosition(music_door, 'd'), null, new Rect(0.7f, 0.1f, 0.2f, 0.9f), new RoomPosition[] { new RoomPosition(music_door, 'a'), new RoomPosition(library_door, 'a'), new RoomPosition(library_door, 'd') });
         CreateNodeConnection(new RoomPosition(music_door, 'a'), new RoomPosition(library_door, 'b'), new Rect(0.1f, 0.1f, 0.2f, 0.8f));
         CreateNodeConnection(new RoomPosition(music_door, 'a'), null, new Rect(0.4f, 0.4f, 0.3f, 0.3f), new RoomPosition[] { new RoomPosition(library_door, 'b'), new RoomPosition(front_door, 'a') });
-        CreateNodeConnection(new RoomPosition(library_door, 'b'), new RoomPosition(front_door, 'a'), new Rect(0.4f, 0.3f, 0.4f, 0.5f));
+        CreateNodeConnection(new RoomPosition(library_door, 'a'), new RoomPosition(front_door, 'a'), new Rect(0.4f, 0.3f, 0.4f, 0.5f));
 
         CreateNodeConnectionRotations(1, 'a', 'd');
         CreateNodeConnectionRotations(2, 'a', 'd');

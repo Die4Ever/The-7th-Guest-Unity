@@ -61,12 +61,20 @@ public class basePuzzle : MonoBehaviour
         puzzlePoints.Add(new PuzzlePoint { clickbox=clickbox, name=name, callback=callback });
     }
 
+    protected void AddPuzzlePointCentered(string name, Rect clickbox, System.Action<PuzzlePoint> callback)
+    {
+        clickbox.position = new Vector2(clickbox.position.x - clickbox.width / 2, clickbox.position.y - clickbox.height / 2);
+        Debug.Log(clickbox.ToString("0.00"));
+        AddPuzzlePoint(name, clickbox, callback);
+    }
+
     // Update is called once per frame
     void Update()
     {
         Vector2 pos = fmvman.ScreenToVideo(Input.mousePosition);//Camera.main.ScreenToViewportPoint(Input.mousePosition);
         PuzzlePoint pp = GetPuzzlePoint(pos);
         int puzzle_videos = fmvman.CountPlayingVideos("puzzle");
+        if (puzzle_videos > 0) Debug.Log("puzzle_videos == "+puzzle_videos.ToString());
         if (puzzle_videos > 0) pp = null;
         if (pp != null) SetCursor(fmvman.blueeye);
         else SetCursor(fmvman.handwag);
