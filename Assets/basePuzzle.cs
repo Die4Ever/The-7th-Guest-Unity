@@ -88,7 +88,7 @@ public class basePuzzle : MonoBehaviour
 
     protected void OnClick(Vector2 pos, PuzzlePoint pp)
     {
-        Debug.Log("clicked " + pp.name+", at "+pos.ToString());
+        Debug.Log("clicked " + pp.name+", at "+pos.ToString("0.00"));
         if (pp.callback != null) pp.callback(pp);
     }
 
