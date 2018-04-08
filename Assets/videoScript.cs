@@ -11,6 +11,8 @@ public class videoScript : MonoBehaviour
     float fadeOutSpeed = 0;
     VideoPlayer vp = null;
     bool fadingOut = false;
+    public bool done = false;
+    public bool prepared = false;
     public VideoPlayer.EventHandler fadeOutFinished;
     public Color transparentColor = new Color(0, 0, 0, 0);
     public GameObject baseRenderPlane;
@@ -18,6 +20,7 @@ public class videoScript : MonoBehaviour
     public float slope = 0.6f;
     public bool freezeFrame = false;
     GameObject rp;
+    public FMVManager.Command command;
 
     // Use this for initialization
     void Start()
@@ -33,6 +36,18 @@ public class videoScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(done==false && (command.type == FMVManager.CommandType.AUDIO || command.type== FMVManager.CommandType.SONG) )
+        {
+            AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+            if (audioSource && audioSource.clip) if (audioSource.clip.loadState == AudioDataLoadState.Loaded || audioSource.clip.loadState == AudioDataLoadState.Failed) if (audioSource.isPlaying == false)
+                    {
+                        Debug.Log("detected song end "+command.file);
+                        EndReached(vp);
+                        prepared = true;
+                    }
+        }
+        if (prepared == false) return;
+
         if (fadeInTime > 0)
         {
             vp.targetCameraAlpha += fadeInSpeed * Time.deltaTime;
@@ -54,6 +69,7 @@ public class videoScript : MonoBehaviour
             else if(fadeOutSpeed > 0)
             {
                 vp.targetCameraAlpha = 0;
+                done = true;
                 if (fadeOutFinished != null)
                 {
                     fadeOutFinished.Invoke(vp);
@@ -61,8 +77,9 @@ public class videoScript : MonoBehaviour
                 }
                 Destroy(this.gameObject, 15);
             }
-            else
+            else if(done==false)
             {
+                done = true;
                 if (fadeOutFinished != null)
                 {
                     fadeOutFinished.Invoke(vp);
@@ -71,15 +88,16 @@ public class videoScript : MonoBehaviour
                 //Destroy(this.gameObject);//only destroy when there is a video to replace it?
             }
         }
-        else if (vp.targetCameraAlpha != 1)
+        /*else if (vp.targetCameraAlpha != 1)
         {
             vp.targetCameraAlpha = 1;
             vp.Play();
-        }
+        }*/
     }
 
     void VideoStarted(VideoPlayer vp)
     {
+        done = false;
         if (fadeInTime > 0)
         {
             vp.targetCameraAlpha = 0;
@@ -98,9 +116,10 @@ public class videoScript : MonoBehaviour
     {
         //Debug.Log("EndReached");
         fadingOut = true;
+        /*done = true;
         if(fadeOutFinished!=null)
             fadeOutFinished.Invoke(vp);
-        fadeOutFinished = null;
+        fadeOutFinished = null;*/
         //Destroy(this.gameObject, fadeOutTime);
     }
 
@@ -109,7 +128,9 @@ public class videoScript : MonoBehaviour
         //Debug.Log("PrepareCompleted");
         //fadeInTime = 0;
         //fadeOutTime = 0;
-        if(fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
+        done = false;
+        prepared = true;
+        if (fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
         if(fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
         if(fadeInTime>0) vp.targetCameraAlpha = 0;
         else vp.targetCameraAlpha = 1;

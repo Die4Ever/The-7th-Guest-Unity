@@ -11,21 +11,20 @@ public class spiders : basePuzzle {
     // Use this for initialization
     int currSpider = -1;
     bool[] spiderSpots;
-    FMVManager currFMV = null;
 
     void Start () {
         BaseInit();
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
-
-        AddPuzzlePoint("a", new Rect(0.46f, 0.82f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("b", new Rect(0.33f, 0.72f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("c", new Rect(0.28f, 0.49f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("d", new Rect(0.32f, 0.26f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("e", new Rect(0.46f, 0.15f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("f", new Rect(0.6f, 0.25f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("g", new Rect(0.66f, 0.49f, 0.05f, 0.05f), ClickPoint);
-        AddPuzzlePoint("h", new Rect(0.6f, 0.72f, 0.05f, 0.05f), ClickPoint);
+        PlaySong("../music/GU8.ogg");
+        AddPuzzlePointCentered("a", new Rect(0.48f, 0.89f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("b", new Rect(0.35f, 0.78f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("c", new Rect(0.29f, 0.54f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("d", new Rect(0.34f, 0.27f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("e", new Rect(0.48f, 0.15f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("f", new Rect(0.63f, 0.27f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("g", new Rect(0.67f, 0.54f, 0.1f, 0.15f), ClickPoint);
+        AddPuzzlePointCentered("h", new Rect(0.61f, 0.79f, 0.1f, 0.15f), ClickPoint);
         spiderSpots = new bool[8];
         Debug.Log(spiderSpots[0]);
     }
@@ -63,6 +62,8 @@ public class spiders : basePuzzle {
 
     void ClickPoint(PuzzlePoint pp)
     {
+        if (pp == null) return;
+
         int spot = SpotNameToInt(pp.name);
         if(spiderSpots[spot])
         {
@@ -76,19 +77,30 @@ public class spiders : basePuzzle {
                 Debug.Log("spot invalid");
                 return;
             }
-            currFMV = Instantiate(fmvman);
-            fmvmen.Add(currFMV);
-            currFMV.baseVideoPlayer=fmvman.baseVideoPlayer;
-            currFMV.QueueOverlayCallback(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0,0,0,1));
-            currFMV.QueueSong(whichway);
+            if(fmvman.playing_audio.Count==0) PlaySound(whichway);
+            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0, 0, 0, 1), "spider-" + pp.name, true);
             currSpider = spot;
         } else
         {
             //skipping 3s and skipping 5s, perhaps that's how one derives the spiders for this starry tale
             if(spot==(currSpider+3)%8 || spot==(currSpider+5)%8 )
             {
-                currFMV.QueueOverlayCallback(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", SpiderArrived, new Color(0, 0, 0, 1));
+                fmvman.ClearPlayingVideos("spider-" + IntToSpotName(currSpider));
                 spiderSpots[spot] = true;
+                int spidersCount = 0;
+                foreach (var s in spiderSpots)
+                {
+                    if (s) spidersCount++;
+                }
+                System.Action<FMVManager.Command> callback = SpiderArrived;
+                if (spidersCount == 7)
+                {
+                    callback = SpiderArrivedWin;
+                }
+                if(spidersCount == 2) PlaySound("GAMWAV/2_s_3.avi");
+                if(spidersCount == 4) PlaySound("GAMWAV/2_e_4.avi");
+                if (spidersCount == 6) PlaySound("GAMWAV/2_e_3.avi");
+                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", callback, new Color(0, 0, 0, 1));
                 currSpider = -1;
             }
         }
@@ -96,22 +108,18 @@ public class spiders : basePuzzle {
 
     void SpiderArrived(FMVManager.Command c)
     {
-        int spidersCount = 0;
-        foreach (var s in spiderSpots)
-        {
-            if (s) spidersCount++;
-        }
-        if (spidersCount == 7)
-        {
-            Debug.Log("You Win!");
-            fmvman.QueueSong("GAMWAV/gen_s_2.avi", true);
-            foreach (var f in fmvmen)
-            {
-                Destroy(f, 0.5f);
-            }
-            fmvmen.Clear();
-            if (endPuzzle != null) endPuzzle("spiders");
-            Destroy(this);
-        }
+
+    }
+
+    void SpiderArrivedWin(FMVManager.Command c)
+    {
+        Debug.Log("You Win!");
+        PlaySound("GAMWAV/gen_s_2.avi", EndCurses, true);//curses!
+    }
+
+    void EndCurses(FMVManager.Command c)
+    {
+        if (endPuzzle != null) endPuzzle("spiders");
+        Destroy(this);
     }
 }
