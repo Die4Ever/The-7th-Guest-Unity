@@ -7,7 +7,7 @@ public class intro : baseRoom {
 	// Use this for initialization
 	void Start () {
         BaseInit();
-        /*PlaySound("../oggs/track1.ogg");
+        PlaySound("../oggs/track1.ogg");
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/vlogo.avi", fadeInTime=1, fadeOutTime=4, playbackSpeed=1 });
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/tripro.avi", fadeInTime = 4, fadeOutTime = 4 });
         fmvman.QueueVideo(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 2 });
@@ -27,9 +27,9 @@ public class intro : baseRoom {
         QueueVideo("INTRO/o6pa.avi");
         QueueVideo("INTRO/o6tu.avi");
         QueueVideo("INTRO/o7pa.avi");
-        QueueVideo("INTRO/o7tu.avi");*/
+        QueueVideo("INTRO/o7tu.avi");
 
-        /*PlaySong("../music/GU73.ogg", false);
+        PlaySong("../music/GU73.ogg", false);
         QueueVideo("INTRO/o8pa.avi");
         QueueVideo("INTRO/o8tu.avi");
         QueueVideo("INTRO/o9pa.avi");
@@ -44,7 +44,7 @@ public class intro : baseRoom {
         PlaySong("../music/AGU32.ogg", false);
         QueueVideo("FH/f1_.avi");
         PlaySong("../music/GU56.ogg");
-        QueueVideo("FH/f_1fa.avi");*/
+        QueueVideo("FH/f_1fa.avi");
         QueueVideo("FH/f_1fb.avi");
         PlaySound("GAMWAV/1_e_1.avi");
         fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORAUDIO, countdown = 1 });

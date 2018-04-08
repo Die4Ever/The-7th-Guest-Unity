@@ -16,11 +16,13 @@ public class baseRoom : MonoBehaviour {
     {
         public int node;
         public char facing;//0=a, 1=b, 2=c, 3=d...?
+        public string filename;
 
-        public RoomPosition(int n, char f)
+        public RoomPosition(int n, char f, string Filename="")
         {
             node = n;
             facing = f;
+            filename = Filename;
         }
     };
     public RoomPosition currPos = new RoomPosition(1, 'a');
@@ -234,28 +236,32 @@ public class baseRoom : MonoBehaviour {
         return closest;
     }
 
-    public void Travel(int to, char toFacing, float speed)
+    //public void Travel(int to, char toFacing)
+    public void Travel(RoomPosition to)
     {
-        Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.ToString()+"-"+toFacing);
-        if (currPos.node != to)
+        Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.node.ToString()+"-"+to.facing);
+        if(to.filename.Length>0)
+        {
+            Debug.Log("using manual filename "+ myvidpath + to.filename);
+            QueueMovement(to.filename, true, to.speed);
+        }
+        else if (currPos.node != to.node)
         {
             //Debug.Log("going from node " + currNode.ToString() + " to " + to.ToString());
-            QueueMovement(currPos.node.ToString() + "_" + to.ToString() + ".avi", true, speed);
-            currPos.node = to;
-            currPos.facing = toFacing;
+            QueueMovement(currPos.node.ToString() + "_" + to.node.ToString() + ".avi", true, to.speed);
         }
         else //rotation
         {
-            if (currPos.facing + 1 == toFacing || currPos.facing > toFacing + 1)//f
+            if (currPos.facing + 1 == to.facing || currPos.facing > to.facing + 1)//f
             {
-                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, to.speed);//the underscore won't always be there?
             }
             else //b
             {
-                QueueMovement("_" + currPos.node.ToString() + "b" + toFacing + ".avi", true, speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "b" + to.facing + ".avi", true, to.speed);//the underscore won't always be there?
             }
-            currPos.facing = toFacing;
         }
+        currPos = to;
     }
 
     protected void OnClick(Vector2 pos, NodeConnection nc)
@@ -287,7 +293,7 @@ public class baseRoom : MonoBehaviour {
             nc.timesClicked++;
             if(nc.toPos!=null) foreach(var f in nc.toPos)
                 {
-                    if(currPos!=f) Travel(f.node, f.facing, nc.speed);
+                    if(currPos!=f) Travel(f);
                 }
             if(nc.callback!=null)
             {

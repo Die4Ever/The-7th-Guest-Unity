@@ -142,6 +142,7 @@ MonoBehaviour:
     type: 2}
   threshold: 0.24
   slope: 0.6
+  freezeFrame: 0
 --- !u!328 &328674524266222350
 VideoPlayer:
   m_ObjectHideFlags: 1
