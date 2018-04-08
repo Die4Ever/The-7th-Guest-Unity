@@ -237,28 +237,28 @@ public class baseRoom : MonoBehaviour {
     }
 
     //public void Travel(int to, char toFacing)
-    public void Travel(RoomPosition to)
+    public void Travel(RoomPosition to, float speed)
     {
         Debug.Log("going from node " + currPos.node.ToString() + "-"+currPos.facing+" to " + to.node.ToString()+"-"+to.facing);
         if(to.filename.Length>0)
         {
             Debug.Log("using manual filename "+ myvidpath + to.filename);
-            QueueMovement(to.filename, true, to.speed);
+            QueueMovement(to.filename, true, speed);
         }
         else if (currPos.node != to.node)
         {
             //Debug.Log("going from node " + currNode.ToString() + " to " + to.ToString());
-            QueueMovement(currPos.node.ToString() + "_" + to.node.ToString() + ".avi", true, to.speed);
+            QueueMovement(currPos.node.ToString() + "_" + to.node.ToString() + ".avi", true, speed);
         }
         else //rotation
         {
             if (currPos.facing + 1 == to.facing || currPos.facing > to.facing + 1)//f
             {
-                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, to.speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, speed);//the underscore won't always be there?
             }
             else //b
             {
-                QueueMovement("_" + currPos.node.ToString() + "b" + to.facing + ".avi", true, to.speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "b" + to.facing + ".avi", true, speed);//the underscore won't always be there?
             }
         }
         currPos = to;
@@ -293,7 +293,7 @@ public class baseRoom : MonoBehaviour {
             nc.timesClicked++;
             if(nc.toPos!=null) foreach(var f in nc.toPos)
                 {
-                    if(currPos!=f) Travel(f);
+                    if(currPos!=f) Travel(f, nc.speed);
                 }
             if(nc.callback!=null)
             {

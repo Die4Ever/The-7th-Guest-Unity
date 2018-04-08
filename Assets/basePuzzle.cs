@@ -74,7 +74,7 @@ public class basePuzzle : MonoBehaviour
         Vector2 pos = fmvman.ScreenToVideo(Input.mousePosition);//Camera.main.ScreenToViewportPoint(Input.mousePosition);
         PuzzlePoint pp = GetPuzzlePoint(pos);
         int puzzle_videos = fmvman.CountPlayingVideos("puzzle");
-        if (puzzle_videos > 0) Debug.Log("puzzle_videos == "+puzzle_videos.ToString());
+        //if (puzzle_videos > 0) Debug.Log("puzzle_videos == "+puzzle_videos.ToString());
         if (puzzle_videos > 0) pp = null;
         if (pp != null) SetCursor(fmvman.blueeye);
         else SetCursor(fmvman.handwag);

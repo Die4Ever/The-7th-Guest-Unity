@@ -47,13 +47,13 @@ public class foyer : baseRoom {
 
     void enterDining(NodeConnection nc)
     {
-        fmvman.QueueVideoCallback(myvidpath + "2_d.avi", enterDining2);
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath+"2_d.avi", callback=enterDining2, type = FMVManager.CommandType.VIDEO });
     }
 
     void enterDining2(FMVManager.Command c)
     {
         Debug.Log("enterDining2");
-        fmvman.playlist.Enqueue(new FMVManager.Command { file="DR/dr_mi.avi", type=FMVManager.CommandType.VIDEO, freezeFrame=true, fadeInTime=1 });
+        fmvman.QueueVideo(new FMVManager.Command { file = "DR/dr_mi.avi", type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = 1 });
         GameObject go = Instantiate(Resources.Load("diningRoom", typeof(GameObject))) as GameObject;
         diningRoom f = go.GetComponent<diningRoom>();
         f.currPos.node = 1;
