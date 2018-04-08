@@ -56,7 +56,8 @@ public class videoScript : MonoBehaviour
             if(fadeInTime <= 0)
             {
                 vp.targetCameraAlpha = 1;
-                if(freezeFrame==false) vp.Play();
+                if (freezeFrame == false) vp.Play();
+                else EndReached(vp);
             }
         }
         else if(fadingOut)
@@ -107,7 +108,12 @@ public class videoScript : MonoBehaviour
         else
         {
             vp.targetCameraAlpha = 1;
-            if(freezeFrame) vp.Pause();
+            if (freezeFrame)
+            {
+                Debug.Log("freeze frame!");
+                vp.Pause();
+                EndReached(vp);
+            }
             //vp.targetCamera = Camera.main;
         }
     }

@@ -16,7 +16,8 @@ public class spiders : basePuzzle {
         BaseInit();
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
-        PlaySong("../music/GU8.ogg");
+        PlaySong("GU8");
+        PlaySound("GAMWAV/2_s_2.avi");
         AddPuzzlePointCentered("a", new Rect(0.48f, 0.89f, 0.1f, 0.15f), ClickPoint);
         AddPuzzlePointCentered("b", new Rect(0.35f, 0.78f, 0.1f, 0.15f), ClickPoint);
         AddPuzzlePointCentered("c", new Rect(0.29f, 0.54f, 0.1f, 0.15f), ClickPoint);

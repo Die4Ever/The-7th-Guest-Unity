@@ -266,7 +266,7 @@ public class baseRoom : MonoBehaviour {
 
     protected void OnClick(Vector2 pos, NodeConnection nc)
     {
-        Debug.Log("clicky! "+pos.ToString("0.00")+" from "+ currPos.node.ToString()+" "+ currPos.facing);
+        //Debug.Log("clicky! "+pos.ToString("0.00")+" from "+ currPos.node.ToString()+" "+ currPos.facing);
         if (fmvman.playlist.Count > 0)
         {
             //Debug.Log("speeeed boost! queue full");
@@ -320,7 +320,7 @@ public class baseRoom : MonoBehaviour {
 
     protected void PlaySong(string file, bool loop=true)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type=FMVManager.CommandType.SONG, tags = "room", loop = loop });
+        fmvman.PlaySong(new FMVManager.Command { file = "../music/"+file+".ogg", type=FMVManager.CommandType.SONG, tags = "room", loop = loop });
     }
 
     protected void PlaySound(string file)

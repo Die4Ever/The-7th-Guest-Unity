@@ -7,13 +7,13 @@ public class intro : baseRoom {
 	// Use this for initialization
 	void Start () {
         BaseInit();
-        PlaySound("../oggs/track1.ogg");
+        /*PlaySound("../oggs/track1.ogg");
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/vlogo.avi", fadeInTime=1, fadeOutTime=4, playbackSpeed=1 });
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/tripro.avi", fadeInTime = 4, fadeOutTime = 4 });
         fmvman.QueueVideo(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 2 });
         fmvman.QueueVideo(new FMVManager.Command { file = "HDISK/title.avi", fadeInTime = 1.0f, fadeOutTime = 0.0f, playbackSpeed = 0.5f });
 
-        PlaySong("../music/GU71.ogg", false);
+        PlaySong("GU71", false);
         QueueVideo("INTRO/o1pa.avi");
         QueueVideo("INTRO/o1tu.avi");
         QueueVideo("INTRO/o3pa.avi");
@@ -22,14 +22,14 @@ public class intro : baseRoom {
         QueueVideo("INTRO/o4tu.avi");
         QueueVideo("INTRO/o5pa.avi");
 
-        PlaySong("../music/GU72.ogg", false);
+        PlaySong("GU72", false);
         QueueVideo("INTRO/o5tu.avi");
         QueueVideo("INTRO/o6pa.avi");
         QueueVideo("INTRO/o6tu.avi");
         QueueVideo("INTRO/o7pa.avi");
         QueueVideo("INTRO/o7tu.avi");
 
-        PlaySong("../music/GU73.ogg", false);
+        PlaySong("GU73", false);
         QueueVideo("INTRO/o8pa.avi");
         QueueVideo("INTRO/o8tu.avi");
         QueueVideo("INTRO/o9pa.avi");
@@ -41,9 +41,9 @@ public class intro : baseRoom {
         QueueVideo("LI/l_in.avi");
         QueueVideo("FH/f_5ba.avi", null, 1);
         QueueVideo("FH/f5_1.avi");
-        PlaySong("../music/AGU32.ogg", false);
-        QueueVideo("FH/f1_.avi");
-        PlaySong("../music/GU56.ogg");
+        PlaySong("AGU32", false);
+        QueueVideo("FH/f1_.avi");*/
+        PlaySong("GU56");
         QueueVideo("FH/f_1fa.avi");
         QueueVideo("FH/f_1fb.avi");
         PlaySound("GAMWAV/1_e_1.avi");

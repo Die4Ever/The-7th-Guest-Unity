@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class foyer : baseRoom {
 
-    public int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
+    private int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
     // Use this for initialization
     void Start () {
         BaseInit();
         myvidpath = "FH/f";
-        PlaySong("../music/GU56.ogg");
+        PlaySong("GU56");
         //PlaySong("../music/GU61.ogg");//when to use which song? maybe I need an EnterRoom function to determine where we're coming from and set the song?
         //nodeNames = new string[]{ "null", "front door", "dining door", "kitchen door", "music door", "library door", "upstairs" };
         CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(dining_door, 'b'), new Rect(0, 0.2f, 0.2f, 0.3f));
@@ -30,11 +30,11 @@ public class foyer : baseRoom {
         CreateNodeConnection(new RoomPosition(music_door, 'a'), null, new Rect(0.4f, 0.4f, 0.3f, 0.3f), new RoomPosition[] { new RoomPosition(library_door, 'b'), new RoomPosition(front_door, 'a') });
         CreateNodeConnection(new RoomPosition(library_door, 'a'), new RoomPosition(front_door, 'a'), new Rect(0.4f, 0.3f, 0.4f, 0.5f));
 
-        CreateNodeConnectionRotations(1, 'a', 'd');
-        CreateNodeConnectionRotations(2, 'a', 'd');
-        CreateNodeConnectionRotations(3, 'a', 'd');
-        CreateNodeConnectionRotations(4, 'a', 'd');
-        CreateNodeConnectionRotations(5, 'a', 'd');
+        CreateNodeConnectionRotations(front_door, 'a', 'd');
+        CreateNodeConnectionRotations(dining_door, 'a', 'd');
+        CreateNodeConnectionRotations(kitchen_door, 'a', 'd');
+        CreateNodeConnectionRotations(music_door, 'a', 'd');
+        CreateNodeConnectionRotations(library_door, 'a', 'd');
 
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(front_door, 'a'), type=ClickboxType.DRAMAMASK, clickbox=new Rect(0.2f, 0.1f, 0.5f, 0.9f), callback = f2 });
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dining_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = enterDining });
@@ -54,18 +54,14 @@ public class foyer : baseRoom {
     {
         Debug.Log("enterDining2");
         fmvman.QueueVideo(new FMVManager.Command { file = "DR/dr_mi.avi", type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = 1 });
-        GameObject go = Instantiate(Resources.Load("diningRoom", typeof(GameObject))) as GameObject;
-        diningRoom f = go.GetComponent<diningRoom>();
-        f.currPos.node = 1;
-        f.currPos.facing = 'c';
-        Destroy(this);
+        fmvman.SwitchRoom("diningRoom", 1, 'a');
     }
 
     void f2(NodeConnection nc)
     {
-        PlaySong("../music/GU8.ogg");
+        PlaySong("GU8");
         QueueMovement("2_.avi");
-        PlaySong("../music/GU16.ogg");
+        PlaySong("GU16");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
     }
@@ -74,7 +70,6 @@ public class foyer : baseRoom {
     {
         Debug.Log("startspiders()");
         currPos.node = spiders;
-        PlaySound("GAMWAV/2_s_2.avi");
         QueueMovement("1_pf.avi", false);
         //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
         GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
@@ -84,9 +79,9 @@ public class foyer : baseRoom {
     void endspiders(string s)
     {
         currPos.node = front_door;
-        PlaySong("../music/GU18.ogg", true);
+        PlaySong("GU18", true);
         QueueMovement("3_0.avi");
-        PlaySong("../music/GU16.ogg");
+        PlaySong("GU16");
         QueueMovement("1_pb.avi");
     }
 }

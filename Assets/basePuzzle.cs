@@ -8,6 +8,7 @@ public class basePuzzle : MonoBehaviour
     protected FMVManager fmvman;
     protected string myvidpath;
     protected string whichway = "GAMWAV/gen_e_8.avi";
+    protected string there = "GAMWAV/gen_e_2.avi";
     protected class PuzzlePoint
     {
         public Rect clickbox;
@@ -113,7 +114,7 @@ public class basePuzzle : MonoBehaviour
 
     protected void PlaySong(string file, bool loop = true)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = file, type = FMVManager.CommandType.SONG, tags = "puzzle", loop = loop });
+        fmvman.PlaySong(new FMVManager.Command { file = "../music/" + file + ".ogg", type = FMVManager.CommandType.SONG, tags = "puzzle", loop = loop });
     }
 
     protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false, bool clear=true)

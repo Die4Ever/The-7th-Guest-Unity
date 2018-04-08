@@ -60,7 +60,7 @@ public class FMVManager : MonoBehaviour
         if(currRoom==null)
         {
             currRoom = GameObject.FindObjectOfType<baseRoom>();
-            Debug.Log("found room " + currRoom.name);
+            //Debug.Log("found room " + currRoom.name);
         }
         GameObject go = Instantiate(Resources.Load(roomName, typeof(GameObject))) as GameObject;
         baseRoom r = go.GetComponent<baseRoom>();
@@ -262,7 +262,7 @@ public class FMVManager : MonoBehaviour
 
     GameObject LoadVideo(Command c)
     {
-        Debug.Log("LoadVideo("+c.file+") playlist.Count=="+playlist.Count.ToString());
+        //Debug.Log("LoadVideo("+c.file+") playlist.Count=="+playlist.Count.ToString());
         GameObject go = null;
         /*if(c.tags.Contains("movement"))
         {
@@ -332,7 +332,7 @@ public class FMVManager : MonoBehaviour
             }
         }
         if (type == CommandType.SONG && currentSong != null && HasTags(currentSong.GetComponent<videoScript>().command.tags, c.tags) ) return false;//I don't see why I would use tags on the current song
-        Debug.Log("CheckWait going forwards!");
+        //Debug.Log("CheckWait going forwards!");
         /*for (int i = 0; i < slot; i++)
         {
             if (playlist[i].type != type) continue;
