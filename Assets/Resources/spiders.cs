@@ -79,14 +79,13 @@ public class spiders : basePuzzle {
                 return;
             }
             if(fmvman.playing_audio.Count==0) PlaySound(whichway);
-            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0, 0, 0, 1), "spider-" + pp.name, true);
+            QueueOverlay(myvidpath + "oy_sp" + pp.name + ".avi", null, new Color(0, 0, 0, 1), "spider-" + pp.name, wait: true, threshold:0.151f, slope: 0.46f);
             currSpider = spot;
         } else
         {
             //skipping 3s and skipping 5s, perhaps that's how one derives the spiders for this starry tale
             if(spot==(currSpider+3)%8 || spot==(currSpider+5)%8 )
             {
-                fmvman.ClearPlayingVideos("spider-" + IntToSpotName(currSpider));
                 spiderSpots[spot] = true;
                 int spidersCount = 0;
                 foreach (var s in spiderSpots)
@@ -98,10 +97,11 @@ public class spiders : basePuzzle {
                 {
                     callback = SpiderArrivedWin;
                 }
-                if(spidersCount == 2) PlaySound("GAMWAV/2_s_3.avi");
-                if(spidersCount == 4) PlaySound("GAMWAV/2_e_4.avi");
+                fmvman.ClearPlayingVideos("spider-" + IntToSpotName(currSpider));
+                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", callback, new Color(0, 0, 0, 1), wait: true, threshold: 0.151f, slope: 0.46f);
+                if (spidersCount == 2) PlaySound("GAMWAV/2_s_3.avi");
+                if (spidersCount == 4) PlaySound("GAMWAV/2_e_4.avi");
                 if (spidersCount == 6) PlaySound("GAMWAV/2_e_3.avi");
-                QueueOverlay(myvidpath + "_" + IntToSpotName(currSpider) + "_" + pp.name + ".avi", callback, new Color(0, 0, 0, 1));
                 currSpider = -1;
             }
         }
@@ -120,6 +120,7 @@ public class spiders : basePuzzle {
 
     void EndCurses(FMVManager.Command c)
     {
+        fmvman.ClearPlayingVideos("puzzle");
         if (endPuzzle != null) endPuzzle("spiders");
         Destroy(this);
     }

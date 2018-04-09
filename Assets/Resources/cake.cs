@@ -42,6 +42,23 @@ public class cake : basePuzzle
         AddPuzzlePointCentered("27", new Rect(0.64f, 0.71f, 0.05f, 0.05f), ClickPoint);
         AddPuzzlePointCentered("28", new Rect(0.68f, 0.59f, 0.05f, 0.05f), ClickPoint);
         AddPuzzlePointCentered("29", new Rect(0.71f, 0.43f, 0.05f, 0.05f), ClickPoint);
+
+        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORVIDEO });
+        for (int i=0;i<30;i++)
+        {
+            QueueOverlay(myvidpath+i.ToString("00")+"df.avi", null, new Color(0, 0, 251.0f/255.0f, 1), "cake-"+i.ToString(), false, true, GetZ(i), 0.5f, 0.5f);
+            //fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 0.01f });
+        }
+        fmvman.playlist.Add(new FMVManager.Command { type= FMVManager.CommandType.WAITTIME, countdown=1 });
+        QueueVideo("_tray.avi");
+    }
+
+    float GetZ(int slot)
+    {
+        float z = -(float)slot / 1000.0f;
+        if (slot > 19) z += 0.1f;
+        if (slot > 24) z += 0.1f;
+        return z;
     }
 
     void GraveDigger(FMVManager.Command c)
@@ -56,6 +73,7 @@ public class cake : basePuzzle
 
         void ExitPuzzle(FMVManager.Command c)
     {
+        fmvman.ClearPlayingVideos("puzzle");
         if (endPuzzle != null) endPuzzle("spiders");
         Destroy(this);
     }

@@ -102,9 +102,9 @@ public class basePuzzle : MonoBehaviour
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
     }
 
-    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="", bool wait=false)
+    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="", bool wait=false, bool freezeFrame=false, float z=0, float threshold=0.1f, float slope=0.5f)
     {
-        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback=callback, transparentColor=transparentColor, type = FMVManager.CommandType.OVERLAY, tags=tags+" puzzle" }, wait);
+        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback = callback, transparentColor = transparentColor, type = FMVManager.CommandType.OVERLAY, tags = tags + " puzzle", freezeFrame = freezeFrame, z = z, threshold=threshold, slope=slope }, wait);
     }
 
     protected void QueueMovement(string file)

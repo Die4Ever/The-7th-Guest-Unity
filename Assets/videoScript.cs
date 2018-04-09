@@ -25,17 +25,25 @@ public class videoScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        vp = this.GetComponent<VideoPlayer>();
+        vp = this.gameObject.GetComponent<VideoPlayer>();
         vp.started += VideoStarted;//I need to make a separate event for finishing the fade out
         vp.targetCameraAlpha = 0.0f;
         vp.prepareCompleted += PrepareCompleted;
         vp.loopPointReached += EndReached;
         vp.targetCamera = Camera.main;
+        Init();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(rp!=null)
+        {
+            if(rp.transform.position.z>9000 && prepared) rp.transform.position = new Vector3(0, 0, command.z);
+            float scale = Camera.main.aspect / 2.0f;
+            if (scale > 1.0f) scale = 1.0f;
+            rp.transform.localScale = new Vector3(scale*2.0f, 1, scale);
+        }
         if(done==false && (command.type == FMVManager.CommandType.AUDIO || command.type== FMVManager.CommandType.SONG) )
         {
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
@@ -99,6 +107,30 @@ public class videoScript : MonoBehaviour
     void VideoStarted(VideoPlayer vp)
     {
         done = false;
+
+        if (fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
+        if (fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
+        if (fadeInTime > 0) vp.targetCameraAlpha = 0;
+        else vp.targetCameraAlpha = 1;
+
+        //if (transparentColor.a > 0)
+        //if (command.type== FMVManager.CommandType.OVERLAY) rp.GetComponent<MeshRenderer>().material.SetColor("_keyingColor", transparentColor);
+        /*{
+            vp.renderMode = VideoRenderMode.RenderTexture;
+            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, command.z), Quaternion.Euler(90, -90, 90));
+            var r = rp.GetComponent<MeshRenderer>();
+            var m = r.material;
+            m.mainTexture = Instantiate(m.mainTexture);
+            Debug.Log(m.name);
+            Debug.Log(m.ToString());
+            vp.targetTexture = m.mainTexture as RenderTexture;
+            m.SetFloat("_thresh", threshold);
+            m.SetFloat("_slope", slope);
+            m.SetColor("_keyingColor", transparentColor);
+            //vp.targetTexture.width = Screen.width;
+            //vp.targetTexture.height = Screen.height;
+        }*/
+
         if (fadeInTime > 0)
         {
             vp.targetCameraAlpha = 0;
@@ -116,6 +148,8 @@ public class videoScript : MonoBehaviour
             }
             //vp.targetCamera = Camera.main;
         }
+
+        //if (command.type == FMVManager.CommandType.OVERLAY) rp.transform.position = new Vector3(0, 0, command.z);
     }
 
     void EndReached(VideoPlayer vp)
@@ -129,22 +163,14 @@ public class videoScript : MonoBehaviour
         //Destroy(this.gameObject, fadeOutTime);
     }
 
-    void PrepareCompleted(VideoPlayer vp)
+    public void Init()
     {
-        //Debug.Log("PrepareCompleted");
-        //fadeInTime = 0;
-        //fadeOutTime = 0;
         done = false;
-        prepared = true;
-        if (fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
-        if(fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
-        if(fadeInTime>0) vp.targetCameraAlpha = 0;
-        else vp.targetCameraAlpha = 1;
-
-        if(transparentColor.a>0)
+        //if (transparentColor.a > 0)
+        if (command.type == FMVManager.CommandType.OVERLAY)
         {
             vp.renderMode = VideoRenderMode.RenderTexture;
-            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 0), Quaternion.Euler(90, -90, 90));
+            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 9001.0f), Quaternion.Euler(90, -90, 90));//init it out of camera
             var r = rp.GetComponent<MeshRenderer>();
             var m = r.material;
             m.mainTexture = Instantiate(m.mainTexture);
@@ -157,6 +183,19 @@ public class videoScript : MonoBehaviour
             //vp.targetTexture.width = Screen.width;
             //vp.targetTexture.height = Screen.height;
         }
+    }
+
+    void PrepareCompleted(VideoPlayer vp)
+    {
+        //Debug.Log("PrepareCompleted");
+        //fadeInTime = 0;
+        //fadeOutTime = 0;
+        done = false;
+        prepared = true;
+        /*if (fadeInTime != 0) fadeInSpeed = 1 / fadeInTime;
+        if(fadeOutTime != 0) fadeOutSpeed = 1 / fadeOutTime;
+        if(fadeInTime>0) vp.targetCameraAlpha = 0;
+        else vp.targetCameraAlpha = 1;*/
     }
 
     private void OnDestroy()

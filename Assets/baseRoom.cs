@@ -254,11 +254,11 @@ public class baseRoom : MonoBehaviour {
         {
             if (currPos.facing + 1 == to.facing || currPos.facing > to.facing + 1)//f
             {
-                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "f" + currPos.facing + ".avi", true, speed, tags:"turning");//the underscore won't always be there?
             }
             else //b
             {
-                QueueMovement("_" + currPos.node.ToString() + "b" + to.facing + ".avi", true, speed);//the underscore won't always be there?
+                QueueMovement("_" + currPos.node.ToString() + "b" + to.facing + ".avi", true, speed, tags:"turning");//the underscore won't always be there?
             }
         }
         currPos = to;
@@ -308,14 +308,14 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0)
+    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="movement", callback = callback, fadeInTime=fadeIn });
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="other", callback = callback, fadeInTime=fadeIn }, wait);
     }
 
-    protected void QueueMovement(string file, bool wait=true, float speed=1)
+    protected void QueueMovement(string file, bool wait=true, float speed=1, string tags="")
     {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement", playbackSpeed = speed }, wait);
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = tags+" movement", playbackSpeed = speed }, wait);
     }
 
     protected void PlaySong(string file, bool loop=true)

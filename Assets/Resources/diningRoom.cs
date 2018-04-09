@@ -19,6 +19,7 @@ public class diningRoom : baseRoom
     {
         PlaySong("GU19", false);
         QueueVideo("1_0.avi", completed1_0);
+        //completed1_0(null);
     }
 
     void completed1_0(FMVManager.Command c)

@@ -13,6 +13,10 @@ public class FMVManager : MonoBehaviour
     //GameObject movementPlayer = null;
     baseRoom currRoom = null;
 
+    float puzzleSpeed = 20.0f / 15.0f;//the game is originally 15fps
+    float movementSpeed = 18.0f / 15.0f;
+    float turningSpeed = 18.0f / 15.0f;
+
     public enum CommandType { VIDEO, SONG, AUDIO, WAITFORVIDEO, WAITFORSONG, WAITFORAUDIO, WAITFOROVERLAY, WAITTIME, SWITCHROOM, OVERLAY };
     public class Command
     {
@@ -26,10 +30,11 @@ public class FMVManager : MonoBehaviour
         public float playbackSpeed = 1;
         public Color transparentColor = new Color(0, 0, 0, 0);
         public System.Action<Command> callback = null;
-        public float threshold = 0.24f;
-        public float slope = 0.6f;
+        public float threshold = 0.1f;
+        public float slope = 0.5f;
         public bool loop = false;
         public bool freezeFrame = false;
+        public float z = 0;
     };
 
     public List<Command> playlist = new List<Command>();
@@ -44,6 +49,9 @@ public class FMVManager : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
         Debug.Log("FMVManager::Start()");
+        Debug.Log("puzzleSpeed == " + puzzleSpeed.ToString("0.000"));
+        Debug.Log("turningSpeed == " + turningSpeed.ToString("0.000"));
+        Debug.Log("movementSpeed == " + movementSpeed.ToString("0.000"));
 
         handwag = Instantiate(Resources.Load("cursors/wagging-hand", typeof(Texture2D))) as Texture2D;
         handbeckon = Instantiate(Resources.Load("cursors/beckon", typeof(Texture2D))) as Texture2D;
@@ -52,6 +60,12 @@ public class FMVManager : MonoBehaviour
         throbbingbrain = Instantiate(Resources.Load("cursors/throbbing-skull", typeof(Texture2D))) as Texture2D;
         blueeye = Instantiate(Resources.Load("cursors/blue-eyeball", typeof(Texture2D))) as Texture2D;
         browneye = Instantiate(Resources.Load("cursors/brown-eyeball", typeof(Texture2D))) as Texture2D;
+
+        if (currRoom == null)
+        {
+            currRoom = GameObject.FindObjectOfType<baseRoom>();
+            Debug.Log("found room " + currRoom.name);
+        }
     }
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)
@@ -74,6 +88,7 @@ public class FMVManager : MonoBehaviour
     public void PlaySong(Command c, bool wait=false)
     {
         //Debug.Log(c.file);
+        //if (currRoom.name == "intro") { c.playbackSpeed *= 4.0f; c.fadeInTime = 0; c.fadeOutTime = 0; c.countdown = 0; }
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type=CommandType.WAITFORSONG });
     }
@@ -81,6 +96,7 @@ public class FMVManager : MonoBehaviour
     public void PlayAudio(Command c, bool wait=true)
     {
         //Debug.Log(c.file);
+        //if (currRoom.name == "intro") { c.playbackSpeed *= 4.0f; c.fadeInTime = 0; c.fadeOutTime = 0; c.countdown = 0; }
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type = CommandType.WAITFORAUDIO });
     }
@@ -88,6 +104,10 @@ public class FMVManager : MonoBehaviour
     public void QueueVideo(Command c, bool wait=true)
     {
         //Debug.Log(c.file);
+        //if (currRoom.name == "intro") { c.playbackSpeed *= 4.0f; c.fadeInTime = 0; c.fadeOutTime = 0; c.countdown = 0; }
+        if (HasTags(c.tags, "puzzle") && c.freezeFrame == false) c.playbackSpeed *= puzzleSpeed;
+        else if (HasTags(c.tags, "turning") && c.freezeFrame == false) c.playbackSpeed *= turningSpeed;
+        else if (HasTags(c.tags, "movement") && c.freezeFrame == false) c.playbackSpeed *= movementSpeed;
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type = CommandType.WAITFORVIDEO });
     }
@@ -95,6 +115,10 @@ public class FMVManager : MonoBehaviour
     public void QueueOverlay(Command c, bool wait=false)
     {
         //Debug.Log(c.file);
+        //if (currRoom.name == "intro") { c.playbackSpeed *= 4.0f; c.fadeInTime = 0; c.fadeOutTime = 0; c.countdown = 0; }
+        if (HasTags(c.tags, "puzzle") && c.freezeFrame == false) c.playbackSpeed *= puzzleSpeed;
+        else if (HasTags(c.tags, "turning") && c.freezeFrame == false) c.playbackSpeed *= turningSpeed;
+        else if (HasTags(c.tags, "movement") && c.freezeFrame == false) c.playbackSpeed *= movementSpeed;
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type = CommandType.WAITFOROVERLAY });
     }
@@ -222,6 +246,7 @@ public class FMVManager : MonoBehaviour
                 vs.fadeOutFinished += SongEndReached;
                 vp.prepareCompleted += SongPrepared;
             }
+            //vs.Init();
             vp.Prepare();
             yield break;
         }
@@ -256,6 +281,7 @@ public class FMVManager : MonoBehaviour
                 playing_audio.Add(source.gameObject);
                 vs.fadeOutFinished += AudioEndReached;
             }
+            //vs.Init();
             source.Play();
         }
     }
@@ -292,6 +318,7 @@ public class FMVManager : MonoBehaviour
         vp.prepareCompleted += PrepareCompleted;
         //vp.loopPointReached += EndReached;
         vs.fadeOutFinished += EndReached;
+        //vs.Init();
         vp.Prepare();
         playing_videos.Add(go);
         return go;
@@ -486,7 +513,7 @@ public class FMVManager : MonoBehaviour
         if (vp.GetComponent<videoScript>().command.type != CommandType.OVERLAY) for (int i = 0; i < playing_videos.Count; i++)
             {
                 var vs = playing_videos[i].GetComponent<videoScript>();
-                if (vs.done)
+                if (vs.done && vs.command.type == CommandType.VIDEO)
                 {
                     Destroy(vs.gameObject, 0.1f + vs.command.fadeOutTime);
                     playing_videos.RemoveAt(i);

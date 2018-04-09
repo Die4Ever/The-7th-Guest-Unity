@@ -26,8 +26,8 @@ public class foyer : baseRoom {
         CreateNodeConnection(new RoomPosition(library_door, 'c'), new RoomPosition(music_door, 'c'), new Rect(0.2f, 0.2f, 0.4f, 0.8f));
 
         CreateNodeConnection(new RoomPosition(music_door, 'd'), null, new Rect(0.7f, 0.1f, 0.2f, 0.9f), new RoomPosition[] { new RoomPosition(music_door, 'a'), new RoomPosition(library_door, 'a'), new RoomPosition(library_door, 'd') });
-        CreateNodeConnection(new RoomPosition(music_door, 'a'), new RoomPosition(library_door, 'b'), new Rect(0.1f, 0.1f, 0.2f, 0.8f));
-        CreateNodeConnection(new RoomPosition(music_door, 'a'), null, new Rect(0.4f, 0.4f, 0.3f, 0.3f), new RoomPosition[] { new RoomPosition(library_door, 'b'), new RoomPosition(front_door, 'a') });
+        CreateNodeConnection(new RoomPosition(music_door, 'a'), new RoomPosition(library_door, 'a'), new Rect(0.1f, 0.1f, 0.2f, 0.8f));
+        CreateNodeConnection(new RoomPosition(music_door, 'a'), null, new Rect(0.4f, 0.4f, 0.3f, 0.3f), new RoomPosition[] { new RoomPosition(library_door, 'a'), new RoomPosition(front_door, 'a') });
         CreateNodeConnection(new RoomPosition(library_door, 'a'), new RoomPosition(front_door, 'a'), new Rect(0.4f, 0.3f, 0.4f, 0.5f));
 
         CreateNodeConnectionRotations(front_door, 'a', 'd');
@@ -60,7 +60,7 @@ public class foyer : baseRoom {
     void f2(NodeConnection nc)
     {
         PlaySong("GU8");
-        QueueMovement("2_.avi");
+        QueueVideo("2_.avi");
         PlaySong("GU16");
         nc.type = ClickboxType.PUZZLE;
         nc.callback = startspiders;
@@ -70,7 +70,7 @@ public class foyer : baseRoom {
     {
         Debug.Log("startspiders()");
         currPos.node = spiders;
-        QueueMovement("1_pf.avi", false);
+        QueueMovement("1_pf.avi", wait:false);
         //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
         GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
         go.GetComponent<basePuzzle>().endPuzzle = endspiders;
@@ -80,7 +80,7 @@ public class foyer : baseRoom {
     {
         currPos.node = front_door;
         PlaySong("GU18", true);
-        QueueMovement("3_0.avi");
+        QueueVideo("3_0.avi");
         PlaySong("GU16");
         QueueMovement("1_pb.avi");
     }
