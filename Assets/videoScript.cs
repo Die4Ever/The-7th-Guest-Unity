@@ -37,13 +37,6 @@ public class videoScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(rp!=null)
-        {
-            if(rp.transform.position.z>9000 && prepared) rp.transform.position = new Vector3(0, 0, command.z);
-            float scale = Camera.main.aspect / 2.0f;
-            if (scale > 1.0f) scale = 1.0f;
-            rp.transform.localScale = new Vector3(scale*2.0f, 1, scale);
-        }
         if(done==false && (command.type == FMVManager.CommandType.AUDIO || command.type== FMVManager.CommandType.SONG) )
         {
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
@@ -55,6 +48,27 @@ public class videoScript : MonoBehaviour
                     }
         }
         if (prepared == false) return;
+
+        if (rp != null)
+        {
+            if (rp.transform.position.z > 9001)
+            {
+                rp.transform.position = new Vector3(0, 0, rp.transform.position.z-1.0f);
+            }
+            else if (rp.transform.position.z > 9000)
+            {
+                var r = rp.GetComponent<MeshRenderer>();
+                var m = r.material;
+                //m.mainTexture = Instantiate(m.mainTexture);
+                m.SetColor("_keyingColor", transparentColor);
+                m.SetFloat("_thresh", threshold);
+                m.SetFloat("_slope", slope);
+                rp.transform.position = new Vector3(0, 0, command.z);
+            }
+            float scale = Camera.main.aspect / 2.0f;
+            if (scale > 1.0f) scale = 1.0f;
+            rp.transform.localScale = new Vector3(scale * 2.0f, 1, scale);
+        }
 
         if (fadeInTime > 0)
         {
@@ -169,16 +183,18 @@ public class videoScript : MonoBehaviour
         //if (transparentColor.a > 0)
         if (command.type == FMVManager.CommandType.OVERLAY)
         {
+            vp.audioOutputMode = VideoAudioOutputMode.None;
             vp.renderMode = VideoRenderMode.RenderTexture;
             rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 9001.0f), Quaternion.Euler(90, -90, 90));//init it out of camera
+            //rp = Instantiate(baseRenderPlane, new Vector3(0, 0, command.z), Quaternion.Euler(90, -90, 90));
             var r = rp.GetComponent<MeshRenderer>();
             var m = r.material;
             m.mainTexture = Instantiate(m.mainTexture);
-            Debug.Log(m.name);
-            Debug.Log(m.ToString());
-            m.SetFloat("_thresh", threshold);
+            /*Debug.Log(m.name);
+            Debug.Log(m.ToString());*/
+            m.SetFloat("_thresh", 9001.0f);
             m.SetFloat("_slope", slope);
-            m.SetColor("_keyingColor", transparentColor);
+            //m.SetColor("_keyingColor", transparentColor);
             vp.targetTexture = m.mainTexture as RenderTexture;
             //vp.targetTexture.width = Screen.width;
             //vp.targetTexture.height = Screen.height;

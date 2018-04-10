@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class foyer : baseRoom {
 
-    private int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
+    const int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
     // Use this for initialization
     void Start () {
         BaseInit();

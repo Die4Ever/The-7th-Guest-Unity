@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class diningRoom : baseRoom
 {
-    private int dr_door = 1, dr_table = 2, cake=90;
+    const int dr_door = 1, dr_table = 2, cake=90;
     // Use this for initialization
     void Start () {
         BaseInit();

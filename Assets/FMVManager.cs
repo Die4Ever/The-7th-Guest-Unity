@@ -17,7 +17,7 @@ public class FMVManager : MonoBehaviour
     float movementSpeed = 18.0f / 15.0f;
     float turningSpeed = 18.0f / 15.0f;
 
-    public enum CommandType { VIDEO, SONG, AUDIO, WAITFORVIDEO, WAITFORSONG, WAITFORAUDIO, WAITFOROVERLAY, WAITTIME, SWITCHROOM, OVERLAY };
+    public enum CommandType { VIDEO, SONG, AUDIO, WAITFORVIDEO, WAITFORSONG, WAITFORAUDIO, WAITFOROVERLAY, WAITTIME, SWITCHROOM, OVERLAY, CLEARVIDEOS };
     public class Command
     {
         public CommandType type=CommandType.VIDEO;
@@ -448,6 +448,12 @@ public class FMVManager : MonoBehaviour
                 if(c.countdown<=0)
                     playlist.RemoveAt(i);
                 break;
+            }
+            if(c.type==CommandType.CLEARVIDEOS)
+            {
+                ClearPlayingVideos(c.tags);
+                playlist.RemoveAt(i);
+                i--;
             }
         }
     }
