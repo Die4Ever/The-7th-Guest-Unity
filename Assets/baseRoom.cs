@@ -11,6 +11,11 @@ public class baseRoom : MonoBehaviour {
     //include the filename prefix in myvidpath, some are 1 letter (like f for foyer) and some are 2 letters (like bd for brian dutton)
     //not of all these seem to follow those rules, I think I'll have to use nodeNames to lookup filenames
     protected string[] nodeNames;//for convenience? I can just leave them as comments, but then I can't show them in debug output
+
+    static protected Rect left = new Rect(-10, 0, 10.02f, 1.0f);
+    static protected Rect right = new Rect(0.98f, 0, 10.02f, 1.0f);
+    static protected Rect turnaround = new Rect(0, -10, 1, 5);
+
     //string[] facingNames;
     public class RoomPosition
     {
@@ -52,7 +57,7 @@ public class baseRoom : MonoBehaviour {
         fmvman = GameObject.FindObjectOfType<FMVManager>();
         //Debug.Log(fmvman.ToString());
         nodeConnections = new List<NodeConnection>();
-        currPos.node = 1;
+        //currPos.node = 1;
 
         SetCursor(fmvman.handwag);
     }
@@ -159,9 +164,9 @@ public class baseRoom : MonoBehaviour {
 
     protected void CreateNodeConnectionRotations(int from, char fromFacing, char toFacing)
     {
-        Rect left = new Rect(-10, 0, 10.02f, 1.0f);
+        /*Rect left = new Rect(-10, 0, 10.02f, 1.0f);
         Rect right = new Rect(0.98f, 0, 10.02f, 1.0f);
-        Rect turnaround = new Rect(0, -10, 1, 5);
+        Rect turnaround = new Rect(0, -10, 1, 5);*/
         if(false)//if disable click to turn, and only use arrow keys or WASD...will need a config setting for this later
         {
             left = new Rect(-5, 0, 10.02f, 1.0f);

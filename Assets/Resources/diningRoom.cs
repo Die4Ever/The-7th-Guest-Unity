@@ -13,6 +13,9 @@ public class diningRoom : baseRoom
 
         //CreateNodeConnection(new RoomPosition(dr_door, 'a'), new RoomPosition(dr_table, 'a', "_mi.avi"), new Rect(0.3f, 0.2f, 0.6f, 0.5f));
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_door, 'a'), toPos = new RoomPosition[] { new RoomPosition(dr_table, 'a', "_mi.avi") }, clickbox = new Rect(0.3f, 0.2f, 0.6f, 0.5f), callback = approachTable });
+        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_table, 'a'), toPos = new RoomPosition[] { new RoomPosition(dr_table, 'b', "_mtf.avi"), new RoomPosition(dr_door, 'b', "_mo.avi") }, clickbox = right });
+
+        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = exitDining });
     }
 
     void approachTable(NodeConnection nc)
@@ -35,7 +38,10 @@ public class diningRoom : baseRoom
 
     void endcake(string s)
     {
+        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORVIDEO });
+        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORAUDIO });
         QueueMovement("_vb.avi");
+        currPos.node = dr_table;
         PlaySong("GU9");
         QueueVideo("2_.avi", completed2_);
     }
@@ -44,5 +50,17 @@ public class diningRoom : baseRoom
     {
         //GU19 for after dr2_.avi??? does the dining room have a song or not?
         PlaySong("GU19");
+    }
+
+    void exitDining(NodeConnection nc)
+    {
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + "_d.avi", callback = exitDining2, type = FMVManager.CommandType.VIDEO });
+    }
+
+    void exitDining2(FMVManager.Command c)
+    {
+        Debug.Log("exitDining2");
+        fmvman.QueueVideo(new FMVManager.Command { file = "FH/f_2bc.avi", type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = 1 });
+        fmvman.SwitchRoom("foyer", 2, 'd');
     }
 }

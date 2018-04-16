@@ -105,6 +105,7 @@ public class FMVManager : MonoBehaviour
     {
         //Debug.Log(c.file);
         //if (currRoom.name == "intro") { c.playbackSpeed *= 4.0f; c.fadeInTime = 0; c.fadeOutTime = 0; c.countdown = 0; }
+        //c.playbackSpeed *= 4.0f;
         if (HasTags(c.tags, "puzzle") && c.freezeFrame == false) c.playbackSpeed *= puzzleSpeed;
         else if (HasTags(c.tags, "turning") && c.freezeFrame == false) c.playbackSpeed *= turningSpeed;
         else if (HasTags(c.tags, "movement") && c.freezeFrame == false) c.playbackSpeed *= movementSpeed;
