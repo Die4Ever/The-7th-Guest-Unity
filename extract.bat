@@ -19,7 +19,7 @@ for /f "tokens=*" %%f in ('dir /b "!t7gpath!*.gjd" 2^>nul') do (
   t7g-toolkit\T7GGrvEx\T7GGrvEx.exe "!t7gpath!!rlfile!" "!t7gpath!%%f"
   move /Y *.vdx "extractedtemp\!outpath!"
   call convert.bat "extractedtemp\!outpath!"
-  start /B /low call upscale15fps.bat "extractedtemp\!outpath!" "!outpath!"
+  start /B /low call upscale.bat "extractedtemp\!outpath!" "!outpath!"
   REM pause
 )
 
