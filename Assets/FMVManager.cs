@@ -14,8 +14,8 @@ public class FMVManager : MonoBehaviour
     baseRoom currRoom = null;
 
     float puzzleSpeed = 20.0f / 15.0f;//the game is originally 15fps
-    float movementSpeed = 18.0f / 15.0f;
-    float turningSpeed = 18.0f / 15.0f;
+    float movementSpeed = 12.0f / 15.0f;
+    float turningSpeed = 12.0f / 15.0f;
 
     public enum CommandType { VIDEO, SONG, AUDIO, WAITFORVIDEO, WAITFORSONG, WAITFORAUDIO, WAITFOROVERLAY, WAITTIME, SWITCHROOM, OVERLAY, CLEARVIDEOS };
     public class Command
@@ -66,6 +66,9 @@ public class FMVManager : MonoBehaviour
             currRoom = GameObject.FindObjectOfType<baseRoom>();
             Debug.Log("found room " + currRoom.name);
         }
+
+        var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
+        dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
     }
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)
@@ -329,6 +332,47 @@ public class FMVManager : MonoBehaviour
     void Update()
     {
         PlaylistProcess();
+
+        if(Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            if (movementSpeed <= 12.0f / 15.0f)
+            {
+                movementSpeed = 15.0f / 15.0f;
+                turningSpeed = 15.0f / 15.0f;
+            }
+            else if (movementSpeed <= 15.0f / 15.0f)
+            {
+                movementSpeed = 18.0f / 15.0f;
+                turningSpeed = 18.0f / 15.0f;
+            }
+            else if(movementSpeed <= 18.0f / 15.0f)
+            {
+                movementSpeed = 20.0f / 15.0f;
+                turningSpeed = 20.0f / 15.0f;
+            }
+            var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
+            dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
+        }
+        else if(Input.GetKeyDown(KeyCode.KeypadMinus))
+        {
+            if (movementSpeed >= 20.0f / 15.0f)
+            {
+                movementSpeed = 18.0f / 15.0f;
+                turningSpeed = 18.0f / 15.0f;
+            }
+            else if (movementSpeed >= 18.0f / 15.0f)
+            {
+                movementSpeed = 15.0f / 15.0f;
+                turningSpeed = 15.0f / 15.0f;
+            }
+            else if (movementSpeed >= 15.0f / 15.0f)
+            {
+                movementSpeed = 12.0f / 15.0f;
+                turningSpeed = 12.0f / 15.0f;
+            }
+            var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
+            dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
+        }
     }
 
     bool CheckWait(CommandType type, int slot, Command c)

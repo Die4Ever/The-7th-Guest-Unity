@@ -44,12 +44,15 @@ public class intro : baseRoom {
         PlaySong("AGU32", false);
         QueueVideo("FH/f1_.avi");*/
         PlaySong("GU56");
-        QueueVideo("FH/f_1fa.avi");
+        /*QueueVideo("FH/f_1fa.avi");
         QueueVideo("FH/f_1fb.avi");
         PlaySound("GAMWAV/1_e_1.avi");
         fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORAUDIO, countdown = 1 });
         PlaySound("GAMWAV/1_e_2.avi");
-        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORAUDIO, callback = SwitchToFoyer, countdown = 1 });
+        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITFORAUDIO, callback = SwitchToFoyer, countdown = 1 });*/
+
+        QueueMovement("FH/f_1fb.avi");
+        SwitchToFoyer(null);
     }
 	
 	// Update is called once per frame
