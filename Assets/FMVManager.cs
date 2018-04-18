@@ -44,7 +44,7 @@ public class FMVManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        path = "file://" + Application.dataPath + "/../upscaled/";
+        path = "file://" + Application.dataPath + "/../upscaled15fps/";
         Application.runInBackground = true;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
@@ -333,43 +333,15 @@ public class FMVManager : MonoBehaviour
     {
         PlaylistProcess();
 
-        if(Input.GetKeyDown(KeyCode.KeypadPlus))
+        if(Input.GetKeyDown(KeyCode.KeypadPlus) || Input.GetKeyDown(KeyCode.KeypadMinus))
         {
-            if (movementSpeed <= 12.0f / 15.0f)
-            {
-                movementSpeed = 15.0f / 15.0f;
-                turningSpeed = 15.0f / 15.0f;
-            }
-            else if (movementSpeed <= 15.0f / 15.0f)
-            {
-                movementSpeed = 18.0f / 15.0f;
-                turningSpeed = 18.0f / 15.0f;
-            }
-            else if(movementSpeed <= 18.0f / 15.0f)
-            {
-                movementSpeed = 20.0f / 15.0f;
-                turningSpeed = 20.0f / 15.0f;
-            }
-            var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
-            dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
-        }
-        else if(Input.GetKeyDown(KeyCode.KeypadMinus))
-        {
-            if (movementSpeed >= 20.0f / 15.0f)
-            {
-                movementSpeed = 18.0f / 15.0f;
-                turningSpeed = 18.0f / 15.0f;
-            }
-            else if (movementSpeed >= 18.0f / 15.0f)
-            {
-                movementSpeed = 15.0f / 15.0f;
-                turningSpeed = 15.0f / 15.0f;
-            }
-            else if (movementSpeed >= 15.0f / 15.0f)
-            {
-                movementSpeed = 12.0f / 15.0f;
-                turningSpeed = 12.0f / 15.0f;
-            }
+            int fps = Mathf.RoundToInt(movementSpeed * 15.0f);
+            if (Input.GetKeyDown(KeyCode.KeypadPlus)) fps++;
+            else if (Input.GetKeyDown(KeyCode.KeypadMinus)) fps--;
+            if (fps < 5) fps = 5;
+            if (fps > 45) fps = 45;
+            movementSpeed = (float)fps / 15.0f;
+            turningSpeed = movementSpeed;
             var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
             dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
         }
