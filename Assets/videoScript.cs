@@ -53,9 +53,9 @@ public class videoScript : MonoBehaviour
         {
             if (rp.transform.position.z > 9001)
             {
-                rp.transform.position = new Vector3(0, 0, rp.transform.position.z-1.0f);
+                rp.transform.position = new Vector3(0, 0, rp.transform.position.z - Time.deltaTime);
             }
-            else if (rp.transform.position.z > 9000)
+            else if (rp.transform.position.z > 9000 && freezeFrame==false)
             {
                 var r = rp.GetComponent<MeshRenderer>();
                 var m = r.material;
@@ -68,6 +68,33 @@ public class videoScript : MonoBehaviour
             float scale = Camera.main.aspect / 2.0f;
             if (scale > 1.0f) scale = 1.0f;
             rp.transform.localScale = new Vector3(scale * 2.0f, 1, scale);
+
+            if(done && vp!=null)
+            {
+                var r = rp.GetComponent<MeshRenderer>();
+                var m = r.material;
+                var rt = m.mainTexture as RenderTexture;
+
+                RenderTexture currentActiveRT = RenderTexture.active;
+                RenderTexture.active = rt;
+
+                Texture2D tex = new Texture2D(rt.width, rt.height);
+                tex.ReadPixels(new Rect(0, 0, tex.width, tex.height), 0, 0, false);
+                tex.Apply();
+
+                RenderTexture.active = currentActiveRT;
+                Destroy(m.mainTexture);
+
+                m.mainTexture = tex;
+                Destroy(vp);
+                Destroy(this.GetComponent<AudioSource>());
+                vp = null;
+
+                m.SetColor("_keyingColor", transparentColor);
+                m.SetFloat("_thresh", threshold);
+                m.SetFloat("_slope", slope);
+                rp.transform.position = new Vector3(0, 0, command.z);
+            }
         }
 
         if (fadeInTime > 0)
@@ -185,7 +212,7 @@ public class videoScript : MonoBehaviour
         {
             vp.audioOutputMode = VideoAudioOutputMode.None;
             vp.renderMode = VideoRenderMode.RenderTexture;
-            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 9001.0f), Quaternion.Euler(90, -90, 90));//init it out of camera
+            rp = Instantiate(baseRenderPlane, new Vector3(0, 0, 9001.01f), Quaternion.Euler(90, -90, 90));//init it out of camera
             //rp = Instantiate(baseRenderPlane, new Vector3(0, 0, command.z), Quaternion.Euler(90, -90, 90));
             var r = rp.GetComponent<MeshRenderer>();
             var m = r.material;
@@ -216,11 +243,14 @@ public class videoScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        vp.renderMode = VideoRenderMode.APIOnly;
-        if(vp.targetTexture!=null)
+        if (vp != null)
         {
-            Destroy(vp.targetTexture);
-            vp.targetTexture = null;
+            vp.renderMode = VideoRenderMode.APIOnly;
+            if (vp.targetTexture != null)
+            {
+                Destroy(vp.targetTexture);
+                vp.targetTexture = null;
+            }
         }
         if(rp!=null)
         {
