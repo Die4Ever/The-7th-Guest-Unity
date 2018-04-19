@@ -9,6 +9,17 @@
         <para>An implementation of IPlayable that controls an AudioClip.</para>
       </summary>
     </member>
+    <member name="M:UnityEngine.Audio.AudioClipPlayable.Create(UnityEngine.Playables.PlayableGraph,UnityEngine.AudioClip,System.Boolean)">
+      <summary>
+        <para>Creates an AudioClipPlayable in the PlayableGraph.</para>
+      </summary>
+      <param name="graph">The PlayableGraph that will contain the new AnimationLayerMixerPlayable.</param>
+      <param name="clip">The AudioClip that will be added in the PlayableGraph.</param>
+      <param name="looping">True if the clip should loop, false otherwise.</param>
+      <returns>
+        <para>A AudioClipPlayable linked to the PlayableGraph.</para>
+      </returns>
+    </member>
     <member name="T:UnityEngine.Audio.AudioMixer">
       <summary>
         <para>AudioMixer asset.</para>
@@ -119,6 +130,17 @@
       <summary>
         <para>A IPlayableOutput implementation that will be used to play audio.</para>
       </summary>
+    </member>
+    <member name="M:UnityEngine.Audio.AudioPlayableOutput.Create(UnityEngine.Playables.PlayableGraph,System.String,UnityEngine.AudioSource)">
+      <summary>
+        <para>Creates an AudioPlayableOutput in the PlayableGraph.</para>
+      </summary>
+      <param name="graph">The PlayableGraph that will contain the AnimationPlayableOutput.</param>
+      <param name="name">The name of the output.</param>
+      <param name="target">The AudioSource that will play the AudioPlayableOutput source Playable.</param>
+      <returns>
+        <para>A new AudioPlayableOutput attached to the PlayableGraph.</para>
+      </returns>
     </member>
     <member name="P:UnityEngine.Audio.AudioPlayableOutput.Null">
       <summary>
@@ -612,6 +634,44 @@
       <summary>
         <para>Determines how much the filter's self-resonance is dampened.</para>
       </summary>
+    </member>
+    <member name="T:UnityEngine.AudioRenderer">
+      <summary>
+        <para>Allow recording the main output of the game or specific groups in the AudioMixer.</para>
+      </summary>
+    </member>
+    <member name="M:UnityEngine.AudioRenderer.GetSampleCountForCaptureFrame">
+      <summary>
+        <para>Returns the number of samples available since the last time AudioRenderer.Render was called. This is dependent on the frame capture rate.</para>
+      </summary>
+      <returns>
+        <para>Number of samples available since last recorded frame.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.AudioRenderer.Render(UnityEngine.Collections.NativeArray`1&lt;System.Single&gt;)">
+      <summary>
+        <para>Performs the recording of the main output as well as any optional mixer groups that have been registered via AudioRenderer.AddMixerGroupSink.</para>
+      </summary>
+      <param name="buffer">The buffer to write the sample data to.</param>
+      <returns>
+        <para>True if the recording succeeded.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.AudioRenderer.Start">
+      <summary>
+        <para>Enters audio recording mode. After this Unity will output silence until AudioRenderer.Stop is called.</para>
+      </summary>
+      <returns>
+        <para>True if the engine was switched into output recording mode. False if it is already recording.</para>
+      </returns>
+    </member>
+    <member name="M:UnityEngine.AudioRenderer.Stop">
+      <summary>
+        <para>Exits audio recording mode. After this audio output will be audible again.</para>
+      </summary>
+      <returns>
+        <para>True if the engine was recording when this function was called.</para>
+      </returns>
     </member>
     <member name="T:UnityEngine.AudioReverbFilter">
       <summary>
