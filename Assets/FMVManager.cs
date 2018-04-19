@@ -44,7 +44,7 @@ public class FMVManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        path = "file://" + Application.dataPath + "/../upscaled15fps/";
+        path = Application.dataPath + "/../upscaled15fps/";
         Application.runInBackground = true;
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 1;
