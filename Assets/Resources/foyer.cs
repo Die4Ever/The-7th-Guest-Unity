@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class foyer : baseRoom {
 
-    const int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
+    public const int front_door=1, dining_door=2, kitchen_door=3, music_door=4, library_door=5, upstairs=6, spiders=90;//use the puzzle node to disable the clickboxes?
     // Use this for initialization
     void Start () {
         BaseInit();
@@ -14,7 +14,7 @@ public class foyer : baseRoom {
         //nodeNames = new string[]{ "null", "front door", "dining door", "kitchen door", "music door", "library door", "upstairs" };
         CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(dining_door, 'b'), new Rect(0, 0.2f, 0.2f, 0.3f));
         CreateNodeConnection(new RoomPosition(front_door, 'b'), null, new Rect(0.8f, 0.2f, 0.17f, 0.35f), new RoomPosition[] { new RoomPosition(front_door, 'c'), new RoomPosition(dining_door, 'b') });
-        CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(upstairs, 'c'), new Rect(0.4f, 0.7f, 0.2f, 0.5f));
+        //CreateNodeConnection(new RoomPosition(front_door, 'c'), new RoomPosition(upstairs, 'c'), new Rect(0.4f, 0.7f, 0.2f, 0.5f));
         CreateNodeConnection(new RoomPosition(dining_door, 'c'), new RoomPosition(kitchen_door, 'c'), new Rect(0.3f, 0.3f, 0.4f, 0.7f));
         CreateNodeConnection(new RoomPosition(kitchen_door, 'b'), null, new Rect(0.1f, 0.1f, 0.4f, 0.9f), new RoomPosition[] { new RoomPosition(kitchen_door, 'a'), new RoomPosition(dining_door, 'a'), new RoomPosition(dining_door, 'b') } );
         CreateNodeConnection(new RoomPosition(kitchen_door, 'a'), new RoomPosition(dining_door, 'a'), new Rect(0.5f, 0.1f, 0.4f, 0.9f));
@@ -39,25 +39,17 @@ public class foyer : baseRoom {
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(front_door, 'a'), type=ClickboxType.DRAMAMASK, clickbox=new Rect(0.2f, 0.1f, 0.5f, 0.9f), callback = f2 });
 
         //doors to rooms - dining_door b, music_door c, library door d, kitchen_door c
-        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dining_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = enterDining });
+        MakeRoomTransition(new RoomPosition(dining_door, 'b'), "diningRoom", diningRoom.dr_door, 'a', new Rect(0.2f, 0.1f, 0.7f, 0.8f), "2_d.avi", "DR/dr_mi.avi");
+        MakeRoomTransition(new RoomPosition(library_door, 'd'), "library", library.li_door, 'a', new Rect(0.3f, 0.1f, 0.5f, 0.8f), "5_d.avi", "LI/l_1bc.avi");
+        MakeRoomTransition(new RoomPosition(music_door, 'c'), "musicRoom", musicRoom.m_door, 'a', new Rect(0.1f, 0.1f, 0.8f, 0.8f), "4_d.avi", "MU/muab.avi");
+        MakeRoomTransition(new RoomPosition(kitchen_door, 'c'), "kitchen", kitchen.k_door, 'b', new Rect(0.3f, 0.1f, 0.4f, 0.8f), "3_d.avi", "K/k_1ba.avi");
+        MakeRoomTransition(new RoomPosition(front_door, 'c'), "upstairs", 1, 'c', new Rect(0.4f, 0.7f, 0.2f, 0.5f), "1_6.avi", "FH/h_1fc.avi", false);
     }
 	
 	// Update is called once per frame
 	/*void Update () {
 		
 	}*/
-
-    void enterDining(NodeConnection nc)
-    {
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath+"2_d.avi", callback=enterDining2, type = FMVManager.CommandType.VIDEO });
-    }
-
-    void enterDining2(FMVManager.Command c)
-    {
-        Debug.Log("enterDining2");
-        fmvman.QueueVideo(new FMVManager.Command { file = "DR/dr_mi.avi", type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = 1 });
-        fmvman.SwitchRoom("diningRoom", 1, 'a');
-    }
 
     void f2(NodeConnection nc)
     {

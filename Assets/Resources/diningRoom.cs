@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class diningRoom : baseRoom
 {
-    const int dr_door = 1, dr_table = 2, cake=90;
+    public const int dr_door = 1, dr_table = 2, cake=90;
     // Use this for initialization
     void Start () {
         BaseInit();
@@ -15,7 +15,7 @@ public class diningRoom : baseRoom
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_door, 'a'), toPos = new RoomPosition[] { new RoomPosition(dr_table, 'a', "_mi.avi") }, clickbox = new Rect(0.3f, 0.2f, 0.6f, 0.5f), callback = approachTable });
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_table, 'a'), toPos = new RoomPosition[] { new RoomPosition(dr_table, 'b', "_mtf.avi"), new RoomPosition(dr_door, 'b', "_mo.avi") }, clickbox = right });
 
-        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dr_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = exitDining });
+        MakeRoomTransition(new RoomPosition(dr_door, 'b'), "foyer", 2, 'd', new Rect(0.2f, 0.2f, 0.6f, 0.6f), "_d.avi", "FH/f_2bc.avi");
     }
 
     void approachTable(NodeConnection nc)
@@ -50,17 +50,5 @@ public class diningRoom : baseRoom
     {
         //GU19 for after dr2_.avi??? does the dining room have a song or not?
         PlaySong("GU19");
-    }
-
-    void exitDining(NodeConnection nc)
-    {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + "_d.avi", callback = exitDining2, type = FMVManager.CommandType.VIDEO });
-    }
-
-    void exitDining2(FMVManager.Command c)
-    {
-        Debug.Log("exitDining2");
-        fmvman.QueueVideo(new FMVManager.Command { file = "FH/f_2bc.avi", type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = 1 });
-        fmvman.SwitchRoom("foyer", 2, 'd');
     }
 }

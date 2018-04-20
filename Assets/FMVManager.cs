@@ -16,6 +16,9 @@ public class FMVManager : MonoBehaviour
     float puzzleSpeed = 20.0f / 15.0f;//the game is originally 15fps
     float movementSpeed = 12.0f / 15.0f;
     float turningSpeed = 12.0f / 15.0f;
+    float musicVolume = 0.25f;
+    float videoVolume = 1.0f;
+    float otherVolume = 1.0f;
 
     public enum CommandType { VIDEO, SONG, AUDIO, WAITFORVIDEO, WAITFORSONG, WAITFORAUDIO, WAITFOROVERLAY, WAITTIME, SWITCHROOM, OVERLAY, CLEARVIDEOS };
     public class Command
@@ -235,13 +238,14 @@ public class FMVManager : MonoBehaviour
             vp.renderMode = VideoRenderMode.APIOnly;
             if (c.type == CommandType.AUDIO)
             {
+                go.GetComponent<AudioSource>().volume *= otherVolume;
                 playing_audio.Add(go);
                 vs.fadeOutFinished += AudioEndReached;
                 vp.prepareCompleted += AudioPrepared;
             }
             if (c.type == CommandType.SONG)
             {
-                go.GetComponent<AudioSource>().volume *= 0.25f;
+                go.GetComponent<AudioSource>().volume *= musicVolume;
                 if (currentSong != null)
                 {
                     Destroy(currentSong);
@@ -272,7 +276,7 @@ public class FMVManager : MonoBehaviour
             }
             if (c.type == CommandType.SONG)
             {
-                source.volume *= 0.25f;
+                source.volume *= musicVolume;
                 if (currentSong != null)
                 {
                     Destroy(currentSong);
@@ -282,6 +286,7 @@ public class FMVManager : MonoBehaviour
             }
             else if (c.type == CommandType.AUDIO)
             {
+                source.volume *= otherVolume;
                 playing_audio.Add(source.gameObject);
                 vs.fadeOutFinished += AudioEndReached;
             }
@@ -309,6 +314,7 @@ public class FMVManager : MonoBehaviour
         //}
         VideoPlayer vp = go.GetComponent<VideoPlayer>();
         videoScript vs = go.GetComponent<videoScript>();
+        go.GetComponent<AudioSource>().volume *= videoVolume;
         vs.command = c;
         vs.transparentColor = c.transparentColor;
         vs.fadeInTime = c.fadeInTime;

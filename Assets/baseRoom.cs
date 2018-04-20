@@ -16,6 +16,11 @@ public class baseRoom : MonoBehaviour {
     static protected Rect right = new Rect(0.98f, 0, 10.02f, 1.0f);
     static protected Rect turnaround = new Rect(0, -10, 1, 5);
 
+    Vector2 fakeClickLeft = new Vector2(-6, 0.5f);
+    Vector2 fakeClickRight = new Vector2(6, 0.5f);
+    Vector2 fakeClickTurnaround = new Vector2(0.5f, -6);
+    Vector2 fakeClickForwards = new Vector2(0.5f, 0.5f);
+
     //string[] facingNames;
     public class RoomPosition
     {
@@ -107,26 +112,28 @@ public class baseRoom : MonoBehaviour {
 
         if (Input.GetAxis("Horizontal") < -0.2f)
         {
-            Vector2 fakeClickPos = new Vector2(-6, 0.5f);
-            nc = GetNodeConnection(fakeClickPos);
-            OnClick(fakeClickPos, nc);
+            nc = GetNodeConnection(fakeClickLeft);
+            if (nc == null) nc = GetNodeConnection(fakeClickTurnaround);
+            if (nc == null) nc = GetNodeConnection(fakeClickRight);
+            OnClick(fakeClickLeft, nc);
         } else if (Input.GetAxis("Horizontal") > 0.2f)
         {
-            Vector2 fakeClickPos = new Vector2(6, 0.5f);
-            nc = GetNodeConnection(fakeClickPos);
-            OnClick(fakeClickPos, nc);
+            nc = GetNodeConnection(fakeClickRight);
+            if (nc == null) nc = GetNodeConnection(fakeClickTurnaround);
+            if (nc == null) nc = GetNodeConnection(fakeClickLeft);
+            OnClick(fakeClickRight, nc);
         }
         else if (Input.GetAxis("Vertical") < -0.2f)
         {
-            Vector2 fakeClickPos = new Vector2(0.5f, -6);//need to create the way bottom clickbox for turning around
-            nc = GetNodeConnection(fakeClickPos);
-            OnClick(fakeClickPos, nc);
+            nc = GetNodeConnection(fakeClickTurnaround);
+            if (nc == null) nc = GetNodeConnection(fakeClickLeft);
+            if (nc == null) nc = GetNodeConnection(fakeClickRight);
+            OnClick(fakeClickTurnaround, nc);
         }
         else if (Input.GetAxis("Vertical") > 0.2f)
         {
-            Vector2 fakeClickPos = new Vector2(0.5f, 0.5f);//center of the screen
-            nc = GetClosestNodeConnection(fakeClickPos);
-            OnClick(fakeClickPos, nc);
+            nc = GetClosestNodeConnection(fakeClickForwards);
+            OnClick(fakeClickForwards, nc);
         }
 
         else if (Input.GetMouseButtonDown(0))
@@ -162,8 +169,58 @@ public class baseRoom : MonoBehaviour {
         CreateNodeConnection(fromPos, toPosArray[0], clickbox, toPosArray);
     }
 
+    protected void CreateNodeConnectionRotations(int from, char[] facings)
+    {
+        char firstFacing = facings[0];
+        char lastFacing = facings[facings.Length - 1];
+
+        if (false)//if disable click to turn, and only use arrow keys or WASD...will need a config setting for this later
+        {//I can move this somewhere else since these aren't local to the function anymore
+            left = new Rect(-5, 0, 10.02f, 1.0f);
+            right = new Rect(5, 0, 10.02f, 1.0f);
+        }
+
+        for(int i=0;i<facings.Length;i++)
+        {
+            char f = facings[i];
+            int iBehind = facings.Length - 1;
+            if (i - 1 >= 0) iBehind = i - 1;
+            char b = facings[iBehind];
+            int iNext = 0;
+            if (i + 1 < facings.Length) iNext = i + 1;
+            char n = facings[iNext];
+
+            RoomPosition posLeft = new RoomPosition(from, f);
+            RoomPosition posRight = new RoomPosition(from, n);
+            //RoomPosition pos180Left = new RoomPosition(from, f);
+            RoomPosition pos180LeftLeft = new RoomPosition(from, b);
+
+            posLeft.filename = "_" + from.ToString() + "b" + posLeft.facing + ".avi";//turning left
+            posRight.filename = "_" + from.ToString() + "f" + posLeft.facing + ".avi";//turning right
+            CreateNodeConnection(posRight, posLeft, left);
+            CreateNodeConnection(posLeft, posRight, right);
+
+            //posLeft.filename = "";
+            //posRight.filename = "";
+            if (iBehind != iNext) CreateNodeConnection(posRight, null, turnaround, new RoomPosition[] { posLeft, pos180LeftLeft }, 2);
+            else CreateNodeConnection(posRight, posLeft, turnaround);
+        }
+        /*RoomPosition fromPos = new RoomPosition(from, firstFacing);
+        RoomPosition toPos = new RoomPosition(from, lastFacing);
+        CreateNodeConnection(fromPos, toPos, left);
+        CreateNodeConnection(toPos, fromPos, right);*/
+    }
+
     protected void CreateNodeConnectionRotations(int from, char fromFacing, char toFacing)
     {
+        //this should probably call the array version, just listing out the facings
+        int numFacings = (int)toFacing - (int)fromFacing + 1;
+        char[] facings = new char[numFacings];
+        int i = 0;
+        for (char f = fromFacing; f <= toFacing; i++, f++) facings[i] = f;
+        CreateNodeConnectionRotations(from, facings);
+        return;
+
         /*Rect left = new Rect(-10, 0, 10.02f, 1.0f);
         Rect right = new Rect(0.98f, 0, 10.02f, 1.0f);
         Rect turnaround = new Rect(0, -10, 1, 5);*/
@@ -239,6 +296,34 @@ public class baseRoom : MonoBehaviour {
             }
         }
         return closest;
+    }
+
+    class RoomDestination
+    {
+        public string roomName;
+        public string fileName;
+        public int node;
+        public char facing;
+        public bool fade;
+    };
+    Dictionary<string, RoomDestination> roomDestinations = new Dictionary<string, RoomDestination>();
+    protected void MakeRoomTransition(RoomPosition fromPos, string roomName, int toNode, char toFacing, Rect clickbox, string file1, string file2, bool fade=true)
+    {
+        roomDestinations.Add(file1, new RoomDestination { roomName=roomName, fileName=file2, node=toNode, facing=toFacing, fade=fade });
+        nodeConnections.Add(new NodeConnection { fromPos = fromPos, type = ClickboxType.EXITROOM, clickbox = clickbox, callback = enterRoom, toPos = new RoomPosition[] { new RoomPosition(0, 'a', file1) } });
+    }
+
+    void enterRoom(NodeConnection nc)
+    {
+        RoomDestination rd;
+        if (!roomDestinations.TryGetValue(nc.toPos[0].filename, out rd))
+        {
+            Debug.LogError("could not find room " + nc.toPos[0].filename);
+            return;
+        }
+        Debug.Log("entering room " + rd.roomName);
+        fmvman.QueueVideo(new FMVManager.Command { file = rd.fileName, type = FMVManager.CommandType.VIDEO, freezeFrame = true, fadeInTime = rd.fade?1:0 });
+        fmvman.SwitchRoom(rd.roomName, rd.node, rd.facing);
     }
 
     //public void Travel(int to, char toFacing)
