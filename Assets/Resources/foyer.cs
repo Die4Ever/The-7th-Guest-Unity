@@ -37,6 +37,8 @@ public class foyer : baseRoom {
         CreateNodeConnectionRotations(library_door, 'a', 'd');
 
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(front_door, 'a'), type=ClickboxType.DRAMAMASK, clickbox=new Rect(0.2f, 0.1f, 0.5f, 0.9f), callback = f2 });
+
+        //doors to rooms - dining_door b, music_door c, library door d, kitchen_door c
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(dining_door, 'b'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.2f, 0.2f, 0.6f, 0.6f), callback = enterDining });
     }
 	
