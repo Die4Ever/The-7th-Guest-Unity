@@ -14,8 +14,8 @@ public class FMVManager : MonoBehaviour
     baseRoom currRoom = null;
 
     float puzzleSpeed = 20.0f / 15.0f;//the game is originally 15fps
-    float movementSpeed = 12.0f / 15.0f;
-    float turningSpeed = 12.0f / 15.0f;
+    float movementSpeed = 11.0f / 15.0f;
+    float turningSpeed = 11.0f / 15.0f;
     float musicVolume = 0.25f;
     float videoVolume = 1.0f;
     float otherVolume = 1.0f;
