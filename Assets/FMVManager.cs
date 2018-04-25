@@ -14,8 +14,8 @@ public class FMVManager : MonoBehaviour
     baseRoom currRoom = null;
 
     float puzzleSpeed = 20.0f / 15.0f;//the game is originally 15fps
-    float movementSpeed = 11.0f / 15.0f;
-    float turningSpeed = 11.0f / 15.0f;
+    float movementSpeed = 12.0f / 15.0f;
+    float turningSpeed = 12.0f / 15.0f;
     float musicVolume = 0.25f;
     float videoVolume = 1.0f;
     float otherVolume = 1.0f;
@@ -69,9 +69,14 @@ public class FMVManager : MonoBehaviour
             currRoom = GameObject.FindObjectOfType<baseRoom>();
             Debug.Log("found room " + currRoom.name);
         }
+        UpdateDebugText();
+    }
 
+    void UpdateDebugText()
+    {
+        float t = movementSpeed * 15.0f / 9.0f;
         var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
-        dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
+        dt.text = "Movement Speed: " + (t * 100.0f).ToString("0") + "%";
     }
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)
@@ -348,8 +353,7 @@ public class FMVManager : MonoBehaviour
             if (fps > 45) fps = 45;
             movementSpeed = (float)fps / 15.0f;
             turningSpeed = movementSpeed;
-            var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
-            dt.text = "Movement Speed: " + (movementSpeed * 100.0f).ToString("0") + "%";
+            UpdateDebugText();
         }
     }
 
