@@ -36,7 +36,6 @@ sysinfo.txt
 #T7G extraction
 /extractedtemp/
 /upscaled*/
-ffmpeg.exe
 /wavs/
 /xmis/
 /oggs/
