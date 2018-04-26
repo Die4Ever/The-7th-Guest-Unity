@@ -46,4 +46,13 @@ public class upstairs : baseRoom
     {
         fmvman.SwitchRoom("foyer", foyer.front_door, 'a');
     }
+
+    protected override void AfterTravel()
+    {
+        if(currPos.node == u_stairs && currPos.facing=='b')
+        {
+            if(Random.value<0.5) QueueVideo("_ghost3.avi");
+            else QueueVideo("_ghost1.avi");
+        }
+    }
 }

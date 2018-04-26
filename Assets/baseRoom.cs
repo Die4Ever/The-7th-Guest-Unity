@@ -352,6 +352,12 @@ public class baseRoom : MonoBehaviour {
             }
         }
         currPos = to;
+        AfterTravel();
+    }
+
+    protected virtual void AfterTravel()
+    {
+
     }
 
     protected void OnClick(Vector2 pos, NodeConnection nc)

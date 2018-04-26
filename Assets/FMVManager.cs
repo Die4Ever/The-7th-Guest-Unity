@@ -76,7 +76,7 @@ public class FMVManager : MonoBehaviour
     {
         float t = movementSpeed * 15.0f / 9.0f;
         var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
-        dt.text = "Movement Speed: " + (t * 100.0f).ToString("0") + "%";
+        dt.text = "Movement Speed: " + (t * 100.0f).ToString("0") + "%\n" + ((int)(movementSpeed*15.0f)).ToString()+" fps";
     }
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)
