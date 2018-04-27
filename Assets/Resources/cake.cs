@@ -201,7 +201,7 @@ public class cake : basePuzzle
         //Ego says "there"
         fmvman.ClearPlayingVideos("puzzle");
         if (endPuzzle != null) endPuzzle("cake");
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
 }

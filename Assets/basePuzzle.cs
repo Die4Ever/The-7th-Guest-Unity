@@ -114,7 +114,7 @@ public class basePuzzle : MonoBehaviour
 
     protected void PlaySong(string file, bool loop = true)
     {
-        fmvman.PlaySong(new FMVManager.Command { file = "../music/" + file + ".ogg", type = FMVManager.CommandType.SONG, tags = "puzzle", loop = loop });
+        fmvman.PlaySong(new FMVManager.Command { file = "../music/" + file + ".ogg", type = FMVManager.CommandType.SONG, tags = "", loop = loop });
     }
 
     protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false, bool clear=true)

@@ -16,7 +16,7 @@ public class spiders : basePuzzle {
         BaseInit();
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
-        PlaySong("GU8");
+        PlaySong("GU17");//or GU8? I think GU8 is for Dutton reading his letter, and GU17 is for spiders and telescope
         PlaySound("GAMWAV/2_s_2.avi");
         AddPuzzlePointCentered("a", new Rect(0.48f, 0.89f, 0.1f, 0.15f), ClickPoint);
         AddPuzzlePointCentered("b", new Rect(0.35f, 0.78f, 0.1f, 0.15f), ClickPoint);
@@ -122,6 +122,6 @@ public class spiders : basePuzzle {
     {
         fmvman.ClearPlayingVideos("puzzle");
         if (endPuzzle != null) endPuzzle("spiders");
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 }

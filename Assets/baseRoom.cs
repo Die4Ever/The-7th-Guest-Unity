@@ -146,6 +146,11 @@ public class baseRoom : MonoBehaviour {
         }
     }
 
+    protected Rect CenteredRect(float x, float y, float width, float height)
+    {
+        return new Rect(x-width/2.0f, y-height/2.0f, width, height);
+    }
+
     protected void CreateNodeConnection(RoomPosition fromPos, RoomPosition toPos, Rect clickbox, RoomPosition[] toPosArray=null, float speed=1)
     {
         var nc = new NodeConnection { fromPos=fromPos, clickbox = clickbox, type=ClickboxType.MOVE, speed = speed };
@@ -404,9 +409,10 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true)
+    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true, int fps=15)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="other", callback = callback, fadeInTime=fadeIn }, wait);
+        float speed = ((float)fps) / 15.0f;
+        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="other", callback = callback, fadeInTime=fadeIn, playbackSpeed=speed }, wait);
     }
 
     protected void QueueMovement(string file, bool wait=true, float speed=1, string tags="")
