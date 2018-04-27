@@ -7,6 +7,7 @@ public class telescope : basePuzzle {
 	// Use this for initialization
 	void Start () {
         BaseInit();
+        myvidpath = "LI/";
         PlaySound("GAMWAV/7_s_1.avi", wait:true, callback: EndPuzzle);
         PlaySong("GU17");
     }

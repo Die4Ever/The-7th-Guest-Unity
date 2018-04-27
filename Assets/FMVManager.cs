@@ -16,7 +16,7 @@ public class FMVManager : MonoBehaviour
     float puzzleSpeed = 30.0f / 15.0f;//the game is originally 15fps
     float movementSpeed = 30.0f / 15.0f;
     float turningSpeed = 30.0f / 15.0f;
-    float musicVolume = 0.25f;
+    float musicVolume = 0;//0.25f;
     float videoVolume = 1.0f;
     float otherVolume = 1.0f;
 
@@ -219,8 +219,19 @@ public class FMVManager : MonoBehaviour
         }
     }
 
+    string AddDefaultExtension(string filename)
+    {
+        bool m = System.Text.RegularExpressions.Regex.IsMatch(filename, "\\..+$");
+        /*
+         * return filename.replace(".avi", ".mkv");//if I ever need to change file extensions
+         */
+        if (m) return filename;
+        return filename + ".avi";
+    }
+
     IEnumerator PlaySong(Command c)
     {
+        c.file = AddDefaultExtension(c.file);
         if(c.type == CommandType.SONG && currentSong!=null)
         {
             if(c.file == currentSong.GetComponent<videoScript>().command.file)
@@ -302,6 +313,7 @@ public class FMVManager : MonoBehaviour
 
     GameObject LoadVideo(Command c)
     {
+        c.file = AddDefaultExtension(c.file);
         //Debug.Log("LoadVideo("+c.file+") playlist.Count=="+playlist.Count.ToString());
         GameObject go = null;
         /*if(c.tags.Contains("movement"))
