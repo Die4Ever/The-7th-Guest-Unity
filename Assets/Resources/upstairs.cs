@@ -63,8 +63,20 @@ public class upstairs : baseRoom
     {
         if (currPos.node == u_stairs && currPos.facing == 'b')
         {
-            if (Random.value < 0.5) QueueVideo("_ghost3.avi");
+            var r = Random.value;
+            if (r < 0.3) QueueVideo("_ghost3.avi");
+            else if(r < 0.6) QueueVideo("_ghost4");
             else QueueVideo("_ghost1.avi");
+            QueueVideo("c_");
+            QueueVideo("2_");
+        }
+        if(currPos.node == u_dutton && currPos.facing == 'd')
+        {
+            QueueVideo("_ghost2");
+        }
+        if(currPos.node==u_stairs && currPos.facing == 'd')
+        {
+            QueueVideo("b_");
         }
     }
 }
