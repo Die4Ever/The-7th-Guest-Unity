@@ -67,7 +67,7 @@ public class FMVManager : MonoBehaviour
         if (currRoom == null)
         {
             currRoom = GameObject.FindObjectOfType<baseRoom>();
-            Debug.Log("found room " + currRoom.name);
+            if(currRoom!=null) Debug.Log("found room " + currRoom.name);
         }
         UpdateDebugText();
     }
@@ -91,7 +91,7 @@ public class FMVManager : MonoBehaviour
         baseRoom r = go.GetComponent<baseRoom>();
         r.currPos.node = node;
         r.currPos.facing = facing;
-        Destroy(currRoom.gameObject);
+        if(currRoom!=null) Destroy(currRoom.gameObject);
         currRoom = r;
         return r;
     }
@@ -231,6 +231,11 @@ public class FMVManager : MonoBehaviour
 
     IEnumerator PlaySong(Command c)
     {
+        if(c.file=="")
+        {
+            if (currentSong != null) Destroy(currentSong);
+            currentSong = null;
+        }
         c.file = AddDefaultExtension(c.file);
         if(c.type == CommandType.SONG && currentSong!=null)
         {
@@ -479,19 +484,24 @@ public class FMVManager : MonoBehaviour
             {
                 LoadVideo(c);
                 playlist.RemoveAt(i);
+                if (c.callback != null) c.callback(c);
                 i--;
             }
             if(c.type == CommandType.WAITTIME)
             {
                 c.countdown -= Time.deltaTime;
-                if(c.countdown<=0)
+                if (c.countdown <= 0)
+                {
                     playlist.RemoveAt(i);
+                    if (c.callback != null) c.callback(c);
+                }
                 break;
             }
             if(c.type==CommandType.CLEARVIDEOS)
             {
                 ClearPlayingVideos(c.tags);
                 playlist.RemoveAt(i);
+                if (c.callback != null) c.callback(c);
                 i--;
             }
         }

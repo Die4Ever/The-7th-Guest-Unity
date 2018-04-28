@@ -19,7 +19,7 @@ public class videoScript : MonoBehaviour
     public float threshold = 0.24f;
     public float slope = 0.6f;
     public bool freezeFrame = false;
-    GameObject rp;
+    public GameObject rp;
     public FMVManager.Command command;
 
     // Use this for initialization

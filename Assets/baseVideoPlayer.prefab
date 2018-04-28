@@ -53,7 +53,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -143,6 +143,7 @@ MonoBehaviour:
   threshold: 0.24
   slope: 0.6
   freezeFrame: 0
+  rp: {fileID: 0}
 --- !u!328 &328674524266222350
 VideoPlayer:
   m_ObjectHideFlags: 1
@@ -152,6 +153,7 @@ VideoPlayer:
   m_Enabled: 1
   m_VideoClip: {fileID: 32900000, guid: 9c6ef0f01ec673841ab17313e72b38e4, type: 3}
   m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
