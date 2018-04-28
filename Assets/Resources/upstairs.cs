@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class upstairs : baseRoom
 {
-    public const int u_stairs = 1, u_mb_ek=2, u_bathroom=3, u_dutton=4, u_dollroom=5, u_attic=7, u_east=8;
+    public const int u_stairs = 1, u_mb_ek = 2, u_bathroom = 3, u_dutton = 4, u_dollroom = 5, u_attic = 7, u_east = 8;
     // Use this for initialization
     void Start()
     {
@@ -35,6 +35,18 @@ public class upstairs : baseRoom
 
         //we can't use the normal way of MakeRoomTransition because the transition video actually has the f prefix on the filename
         nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(u_stairs, 'a'), type = ClickboxType.EXITROOM, clickbox = new Rect(0.3f, 0.0f, 0.4f, 0.5f), callback = downStairs });
+        nodeConnections.Add(new NodeConnection { fromPos = new RoomPosition(u_stairs, 'c'), type = ClickboxType.CHATTERINGTEETH, clickbox = CenteredRect(0.6f, 0.5f, 0.4f, 0.7f), callback = h_morph });
+    }
+
+    void h_morph(NodeConnection nc)
+    {
+        PlaySong("GU18");
+        QueueVideo("_morph", callback: AfterMorph, fps: 9);
+    }
+
+    void AfterMorph(FMVManager.Command c)
+    {
+        PlaySong("GU56");
     }
 
     void downStairs(NodeConnection nc)
@@ -49,9 +61,9 @@ public class upstairs : baseRoom
 
     protected override void AfterTravel()
     {
-        if(currPos.node == u_stairs && currPos.facing=='b')
+        if (currPos.node == u_stairs && currPos.facing == 'b')
         {
-            if(Random.value<0.5) QueueVideo("_ghost3.avi");
+            if (Random.value < 0.5) QueueVideo("_ghost3.avi");
             else QueueVideo("_ghost1.avi");
         }
     }

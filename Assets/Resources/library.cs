@@ -49,6 +49,9 @@ public class library : baseRoom
     void EndTelescope(string s)
     {
         QueueMovement("2_3b.avi");
+        QueueMovement("_2bd");
         currPos.node = li_mid;
+        currPos.facing = 'd';
+        QueueVideo("ipoem");
     }
 }

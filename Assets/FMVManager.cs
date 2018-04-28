@@ -16,7 +16,7 @@ public class FMVManager : MonoBehaviour
     float puzzleSpeed = 30.0f / 15.0f;//the game is originally 15fps
     float movementSpeed = 30.0f / 15.0f;
     float turningSpeed = 30.0f / 15.0f;
-    float musicVolume = 0;//0.25f;
+    float musicVolume = 0.25f;
     float videoVolume = 1.0f;
     float otherVolume = 1.0f;
 
