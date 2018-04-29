@@ -17,7 +17,7 @@ public class cake : basePuzzle
     int[] types_selected = new int[4] { 0, 0, 0, 0 };
 	// Use this for initialization
 	void Start () {
-        BaseInit();
+        BaseInit("cake");
         myvidpath = "DR/dr";
         PlaySong("GU12");
         PlaySound("GAMWAV/3_s_1.avi", GraveDigger);
@@ -193,15 +193,7 @@ public class cake : basePuzzle
                 if (GetSlice(x, y) != done) return;
             }
         }
-        ExitPuzzle(c);
-    }
-
-    void ExitPuzzle(FMVManager.Command c)
-    {
         //Ego says "there"
-        fmvman.ClearPlayingVideos("puzzle");
-        if (endPuzzle != null) endPuzzle("cake");
-        Destroy(this.gameObject);
+        WinPuzzle();
     }
-
 }

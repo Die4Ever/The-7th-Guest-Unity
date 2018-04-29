@@ -7,6 +7,7 @@ public class basePuzzle : MonoBehaviour
     protected static Texture2D currcursor;
     protected FMVManager fmvman;
     protected string myvidpath;
+    string PuzzleName;
     protected string whichway = "GAMWAV/gen_e_8.avi";
     protected string there = "GAMWAV/gen_e_2.avi";
     protected class PuzzlePoint
@@ -18,8 +19,9 @@ public class basePuzzle : MonoBehaviour
     protected List<PuzzlePoint> puzzlePoints;
     public System.Action<string> endPuzzle = null;
 
-    protected void BaseInit()
+    protected void BaseInit(string puzzleName)
     {
+        PuzzleName = puzzleName;
         if (puzzlePoints != null)
         {
             Debug.Log("double init?");
@@ -45,6 +47,27 @@ public class basePuzzle : MonoBehaviour
 
     }
 
+    protected void WinPuzzle()
+    {
+        fmvman.IncrementVariable("beatpuzzle-" + PuzzleName);
+        fmvman.ClearPlayingVideos("puzzle");
+        if (endPuzzle != null) endPuzzle(PuzzleName);
+        Destroy(this.gameObject);
+    }
+
+    protected void RestartPuzzle()
+    {
+        fmvman.IncrementVariable("restartpuzzle-" + PuzzleName);
+    }
+
+    protected void LeavePuzzle()
+    {
+        fmvman.IncrementVariable("leavepuzzle-" + PuzzleName);
+        fmvman.ClearPlayingVideos("puzzle");
+        if (endPuzzle != null) endPuzzle(PuzzleName);
+        Destroy(this.gameObject);
+    }
+
     protected PuzzlePoint GetPuzzlePoint(Vector2 pos)
     {
         foreach (var pp in puzzlePoints)
@@ -59,7 +82,7 @@ public class basePuzzle : MonoBehaviour
 
     protected void AddPuzzlePoint(string name, Rect clickbox, System.Action<PuzzlePoint> callback)
     {
-        puzzlePoints.Add(new PuzzlePoint { clickbox=clickbox, name=name, callback=callback });
+        puzzlePoints.Add(new PuzzlePoint { clickbox = clickbox, name = name, callback = callback });
     }
 
     protected void AddPuzzlePointCentered(string name, Rect clickbox, System.Action<PuzzlePoint> callback)
@@ -82,13 +105,13 @@ public class basePuzzle : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             //Debug.Log("clicked at "+pos.ToString("0.00"));
-            if(pp!=null) OnClick(pos, pp);
+            if (pp != null) OnClick(pos, pp);
         }
     }
 
     protected void OnClick(Vector2 pos, PuzzlePoint pp)
     {
-        Debug.Log("clicked " + pp.name+", at "+pos.ToString("0.00"));
+        Debug.Log("clicked " + pp.name + ", at " + pos.ToString("0.00"));
         if (pp.callback != null) pp.callback(pp);
     }
 
@@ -102,9 +125,9 @@ public class basePuzzle : MonoBehaviour
         fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "puzzle" });
     }
 
-    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags="", bool wait=false, bool freezeFrame=false, float z=0, float threshold=0.1f, float slope=0.5f)
+    protected void QueueOverlay(string file, System.Action<FMVManager.Command> callback, Color transparentColor, string tags = "", bool wait = false, bool freezeFrame = false, float z = 0, float threshold = 0.1f, float slope = 0.5f)
     {
-        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback = callback, transparentColor = transparentColor, type = FMVManager.CommandType.OVERLAY, tags = tags + " puzzle", freezeFrame = freezeFrame, z = z, threshold=threshold, slope=slope }, wait);
+        fmvman.QueueOverlay(new FMVManager.Command { file = file, callback = callback, transparentColor = transparentColor, type = FMVManager.CommandType.OVERLAY, tags = tags + " puzzle", freezeFrame = freezeFrame, z = z, threshold = threshold, slope = slope }, wait);
     }
 
     protected void QueueMovement(string file)
@@ -117,9 +140,9 @@ public class basePuzzle : MonoBehaviour
         fmvman.PlaySong(new FMVManager.Command { file = "../music/" + file + ".ogg", type = FMVManager.CommandType.SONG, tags = "", loop = loop });
     }
 
-    protected void PlaySound(string file, System.Action<FMVManager.Command> callback=null, bool wait=false, bool clear=true)
+    protected void PlaySound(string file, System.Action<FMVManager.Command> callback = null, bool wait = false, bool clear = true)
     {
-        if(clear)
+        if (clear)
         {
             fmvman.ClearPlayingAudio("puzzle");
         }

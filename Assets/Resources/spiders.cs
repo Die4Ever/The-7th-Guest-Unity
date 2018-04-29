@@ -13,7 +13,7 @@ public class spiders : basePuzzle {
     bool[] spiderSpots;
 
     void Start () {
-        BaseInit();
+        BaseInit("spiders");
         myvidpath = "FH/f";
         //fmvman.QueueSong(whichway);
         PlaySong("GU17");//or GU8? I think GU8 is for Dutton reading his letter, and GU17 is for spiders and telescope
@@ -120,8 +120,6 @@ public class spiders : basePuzzle {
 
     void EndCurses(FMVManager.Command c)
     {
-        fmvman.ClearPlayingVideos("puzzle");
-        if (endPuzzle != null) endPuzzle("spiders");
-        Destroy(this.gameObject);
+        WinPuzzle();
     }
 }

@@ -40,8 +40,10 @@ public class upstairs : baseRoom
 
     void h_morph(NodeConnection nc)
     {
-        PlaySong("GU18");
-        QueueVideo("_morph", callback: AfterMorph, fps: 9);
+        PlaySong("GU18", loop:true);//I might need to be able to set it to loop twice?
+        //QueueVideo("_morph", fps: 10);
+        QueueVideo("_morph", callback: AfterMorph, fps: 8);
+        fmvman.IncrementVariable("h_morph");
     }
 
     void AfterMorph(FMVManager.Command c)

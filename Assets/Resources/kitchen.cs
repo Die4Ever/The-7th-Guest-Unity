@@ -52,8 +52,7 @@ public class kitchen : baseRoom
     {
         QueueMovement("2_4.avi");
         currPos.node = k_cans;
-        GameObject go = Instantiate(Resources.Load("cans", typeof(GameObject))) as GameObject;
-        go.GetComponent<basePuzzle>().endPuzzle = EndCans;
+        StartPuzzle("cans", EndCans);
         //fmvman.QueueVideo(new FMVManager.Command { file="K/shelf.avi", tags="shelf", fadeInTime=1.0f });//play this in the puzzle, and then k6_.avi outside of the puzzle object? that means the kitchen is responsible for killing the shelf video even though the puzzle started it
     }
 

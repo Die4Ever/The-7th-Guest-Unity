@@ -34,7 +34,7 @@ public class menu : MonoBehaviour {
             if (fmvman.HasTags(com.tags, "menu"))
             {
                 myvid = vs;
-                myvid.rp.transform.SetParent(transform);
+                if(myvid.rp!=null) myvid.rp.transform.SetParent(transform);
             }
         }
     }
@@ -43,6 +43,7 @@ public class menu : MonoBehaviour {
     {
         if (myvid == null) MenuReady(c);
 
+        myvid.rp.transform.SetParent(transform);
         fmvman.PlaySong(new FMVManager.Command { file = "", type = FMVManager.CommandType.SONG });
         fmvman.SwitchRoom("intro", 1, 'a');
         YSpeed = 10.0f;

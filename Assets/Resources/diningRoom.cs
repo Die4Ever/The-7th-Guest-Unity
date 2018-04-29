@@ -32,8 +32,7 @@ public class diningRoom : baseRoom
         //need to make a clickbox for this here...
         currPos.node = cake;
         QueueMovement("_v.avi", false);
-        GameObject go = Instantiate(Resources.Load("cake", typeof(GameObject))) as GameObject;
-        go.GetComponent<basePuzzle>().endPuzzle = endcake;
+        StartPuzzle("cake", endcake);
     }
 
     void endcake(string s)

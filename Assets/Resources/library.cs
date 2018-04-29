@@ -42,8 +42,7 @@ public class library : baseRoom
     {
         currPos.node = telescope;
         QueueMovement("2_3f.avi", wait: true);
-        GameObject go = Instantiate(Resources.Load("telescope", typeof(GameObject))) as GameObject;
-        go.GetComponent<basePuzzle>().endPuzzle = EndTelescope;
+        StartPuzzle("telescope", EndTelescope);
     }
 
     void EndTelescope(string s)

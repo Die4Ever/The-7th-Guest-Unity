@@ -6,7 +6,7 @@ public class telescope : basePuzzle {
 
 	// Use this for initialization
 	void Start () {
-        BaseInit();
+        BaseInit("telescope");
         myvidpath = "LI/";
         PlaySound("GAMWAV/7_s_1.avi", wait:true, callback: EndPuzzle);
         PlaySong("GU17");
@@ -14,8 +14,6 @@ public class telescope : basePuzzle {
 
     void EndPuzzle(FMVManager.Command c)
     {
-        fmvman.ClearPlayingVideos("puzzle");
-        if (endPuzzle != null) endPuzzle("cake");
-        Destroy(this.gameObject);
+        WinPuzzle();
     }
 }

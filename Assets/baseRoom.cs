@@ -48,6 +48,11 @@ public class baseRoom : MonoBehaviour {
         public int timesClicked = 0;
         public System.Action<NodeConnection> callback = null;
         public float speed = 1;
+
+        public string ToString(string s)
+        {
+            return s + "-"+fromPos.node.ToString()+fromPos.facing+"-"+clickbox.ToString();
+        }
     };
     protected List<NodeConnection> nodeConnections;
 
@@ -392,7 +397,7 @@ public class baseRoom : MonoBehaviour {
         if(nc!=null)
         {
             nc.timesClicked++;
-            if(nc.toPos!=null) foreach(var f in nc.toPos)
+            if (nc.toPos!=null) foreach(var f in nc.toPos)
                 {
                     if(currPos!=f) Travel(f, nc.speed);
                 }
@@ -428,5 +433,10 @@ public class baseRoom : MonoBehaviour {
     protected void PlaySound(string file)
     {
         fmvman.PlayAudio(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room" }, false);
+    }
+
+    protected GameObject StartPuzzle(string name, System.Action<string> EndPuzzle)
+    {
+        return fmvman.StartPuzzle(name, EndPuzzle);
     }
 }

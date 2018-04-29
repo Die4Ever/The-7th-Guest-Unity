@@ -6,7 +6,7 @@ public class cans : basePuzzle
 {
 	// Use this for initialization
 	void Start () {
-        BaseInit();
+        BaseInit("cans");
         myvidpath = "K/";
         PlaySong("GU17");//which song?
         fmvman.QueueVideo(new FMVManager.Command { file = "K/shelf.avi", tags = "shelf puzzle", fadeInTime = 1.0f, callback = EndCans });
@@ -14,8 +14,6 @@ public class cans : basePuzzle
 
     void EndCans(FMVManager.Command c)
     {
-        fmvman.ClearPlayingVideos("puzzle");
-        if (endPuzzle != null) endPuzzle("cans");
-        Destroy(this.gameObject);
-    }	
+        WinPuzzle();
+    }
 }

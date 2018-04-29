@@ -66,8 +66,7 @@ public class foyer : baseRoom {
         currPos.node = spiders;
         QueueMovement("1_pf.avi", wait:false);
         //fmvman.QueueSong("GAMWAV/2_s_2.avi", true);
-        GameObject go = Instantiate(Resources.Load("spiders", typeof(GameObject))) as GameObject;
-        go.GetComponent<basePuzzle>().endPuzzle = endspiders;
+        StartPuzzle("spiders", endspiders);
     }
 
     void endspiders(string s)

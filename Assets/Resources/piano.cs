@@ -6,7 +6,7 @@ public class piano : basePuzzle
 {
 	// Use this for initialization
 	void Start () {
-        BaseInit();
+        BaseInit("piano");
         myvidpath = "MU/";
         PlaySong("GU17");//which song?
         EndPiano(null);
@@ -14,8 +14,6 @@ public class piano : basePuzzle
 
     void EndPiano(FMVManager.Command c)
     {
-        fmvman.ClearPlayingVideos("puzzle");
-        if (endPuzzle != null) endPuzzle("piano");
-        Destroy(this.gameObject);
+        WinPuzzle();
     }
 }

@@ -43,7 +43,8 @@ public class FMVManager : MonoBehaviour
     public List<Command> playlist = new List<Command>();
     public List<GameObject> playing_videos = new List<GameObject>();
     public List<GameObject> playing_audio = new List<GameObject>();
- 
+    public Dictionary<string, int> variables = new Dictionary<string, int>();//the original game uses an array of bytes, I should be able to make due with this
+
     // Use this for initialization
     void Start()
     {
@@ -81,6 +82,7 @@ public class FMVManager : MonoBehaviour
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)
     {
+        IncrementVariable("enter-" + roomName);
         Debug.Log("SwitchRoom("+roomName+")");
         if(currRoom==null)
         {
@@ -94,6 +96,14 @@ public class FMVManager : MonoBehaviour
         if(currRoom!=null) Destroy(currRoom.gameObject);
         currRoom = r;
         return r;
+    }
+
+    public GameObject StartPuzzle(string name, System.Action<string> endPuzzle)
+    {
+        IncrementVariable("startpuzzle-" + name);
+        GameObject go = Instantiate(Resources.Load(name, typeof(GameObject))) as GameObject;
+        go.GetComponent<basePuzzle>().endPuzzle = endPuzzle;
+        return go;
     }
 
     public void PlaySong(Command c, bool wait=false)
@@ -229,14 +239,25 @@ public class FMVManager : MonoBehaviour
         return filename + ".avi";
     }
 
+    public void IncrementVariable(string name)
+    {
+        int v = 0;
+        variables.TryGetValue(name, out v);
+        variables[name] = v + 1;
+
+        foreach (var k in variables.Keys) Debug.Log(k + ": " + variables[k].ToString());
+    }
+
     IEnumerator PlaySong(Command c)
     {
         if(c.file=="")
         {
             if (currentSong != null) Destroy(currentSong);
             currentSong = null;
+            yield break;
         }
         c.file = AddDefaultExtension(c.file);
+        //IncrementPlayCount(c.file);
         if(c.type == CommandType.SONG && currentSong!=null)
         {
             if(c.file == currentSong.GetComponent<videoScript>().command.file)
@@ -319,6 +340,7 @@ public class FMVManager : MonoBehaviour
     GameObject LoadVideo(Command c)
     {
         c.file = AddDefaultExtension(c.file);
+        //IncrementPlayCount(c.file);
         //Debug.Log("LoadVideo("+c.file+") playlist.Count=="+playlist.Count.ToString());
         GameObject go = null;
         /*if(c.tags.Contains("movement"))
