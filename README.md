@@ -3,6 +3,8 @@
 
 a remake of The 7th Guest in Unity, with options to upscale the original videos and gameplay options
 
+to see my ideas for improvements, look here https://github.com/Die4Ever/The-7th-Guest-Unity/labels/enhancement
+
 did some upscaling tests here https://www.youtube.com/playlist?list=PLZIQTa_kwZhDhJiNmrEGf2kTPLnKfdE0e
 
 using ffmpeg's minterpolate option for now https://ffmpeg.org/ffmpeg-filters.html#minterpolate
