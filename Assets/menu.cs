@@ -11,10 +11,18 @@ public class menu : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         fmvman = GameObject.FindObjectOfType<FMVManager>();
-        PlaySong("GU61");
-        QueueOverlay("INTRO/sphinx", MenuReady, Color.black, z:500);
-        PlaySound("GAMWAV/gen_s_19");
         rp = GetComponentInChildren<MeshRenderer>();
+
+        if (fmvman.PT)
+        {
+            Destroy(rp);
+            rp = null;
+            fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 1, callback = NewGame });
+            return;
+        }
+        PlaySong("GU61");
+        QueueOverlay("INTRO/sphinx", MenuReady, Color.black, z: 500);
+        PlaySound("GAMWAV/gen_s_19");
         var m = rp.material;
         //Destroy(m.mainTexture);
         m.mainTexture = sphinx_background;
@@ -22,7 +30,7 @@ public class menu : MonoBehaviour {
         m.SetColor("_keyingColor", new Color(0, 0, 1));
         m.SetFloat("_thresh", 1);
         m.SetFloat("_slope", 1);
-        fmvman.playlist.Add(new FMVManager.Command { type= FMVManager.CommandType.WAITTIME, countdown=10, callback= NewGame });
+        fmvman.playlist.Add(new FMVManager.Command { type = FMVManager.CommandType.WAITTIME, countdown = 10, callback = NewGame });
     }
 	
 	void MenuReady(FMVManager.Command c)
@@ -41,6 +49,11 @@ public class menu : MonoBehaviour {
 
     void NewGame(FMVManager.Command c)
     {
+        if (fmvman.PT)
+        {
+            fmvman.SwitchRoom("PT/hallway1", 8, 'b');
+            return;
+        }
         if (myvid == null) MenuReady(c);
 
         myvid.rp.transform.SetParent(transform);
@@ -51,6 +64,8 @@ public class menu : MonoBehaviour {
 
     private void Update()
     {
+        if (fmvman.PT) return;
+
         float scale = Camera.main.aspect / 2.0f;
         if (scale > 1.0f) scale = 1.0f;
         rp.transform.localScale = new Vector3(scale * 2.0f, 1, scale);

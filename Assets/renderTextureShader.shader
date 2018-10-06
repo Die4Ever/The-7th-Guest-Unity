@@ -3,9 +3,10 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_thresh("Threshold", Range(0, 1)) = 0.65
+		_thresh("Threshold", Range(0, 5)) = 0.65
 		_slope("Slope", Range(0, 1)) = 0.63
 		_keyingColor("KeyColor", Color) = (0,1,0,1)
+		_multColor("MultColor", Color) = (1,1,1,1)
 	}
 	SubShader
 	{
@@ -40,6 +41,7 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			float3 _keyingColor;
+			float4 _multColor;
 			float _thresh;
 			float _slope;
 			
@@ -60,7 +62,7 @@
 				float edge0 = _thresh * (1 - _slope);
 				float alpha = smoothstep(edge0, _thresh, d);
 				//return float4(0, 1, 0, 0.5);
-				return float4(col, alpha);
+				return float4(col, alpha) * _multColor;
 				//return col;
 			}
 			ENDCG

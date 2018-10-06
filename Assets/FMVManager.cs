@@ -7,15 +7,22 @@ public class FMVManager : MonoBehaviour
 {
     public GameObject baseVideoPlayer;
     public Texture2D handbeckon, handwag, dramamask, chatteringteeth, throbbingbrain, blueeye, browneye;
+    public bool PT;
     //GameObject currentVideo = null;
     GameObject currentSong = null;
     string path = "";
     //GameObject movementPlayer = null;
     baseRoom currRoom = null;
 
-    float puzzleSpeed = 30.0f / 15.0f;//the game is originally 15fps
-    float movementSpeed = 30.0f / 15.0f;
-    float turningSpeed = 30.0f / 15.0f;
+ #if UNITY_EDITOR
+    float puzzleSpeed = 30.0f / 15.0f;//the game is originally 15fps?
+    float movementSpeed = 30.0f / 15.0f;//the game is originall 9fps
+    float turningSpeed = 30.0f / 15.0f;//the game is originall 9fps
+#else
+    float puzzleSpeed = 15.0f / 15.0f;//the game is originally 15fps?
+    float movementSpeed = 12.0f / 15.0f;//the game is originall 9fps
+    float turningSpeed = 12.0f / 15.0f;//the game is originall 9fps
+#endif
     float musicVolume = 0.25f;
     float videoVolume = 1.0f;
     float otherVolume = 1.0f;
@@ -71,13 +78,18 @@ public class FMVManager : MonoBehaviour
             if(currRoom!=null) Debug.Log("found room " + currRoom.name);
         }
         UpdateDebugText();
+#if !UNITY_EDITOR
+        Destroy(GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>());
+#endif
     }
 
     void UpdateDebugText()
     {
+#if UNITY_EDITOR
         float t = movementSpeed * 15.0f / 9.0f;
         var dt = GameObject.Find("DebugText").GetComponent<UnityEngine.UI.Text>();
         dt.text = "Movement Speed: " + (t * 100.0f).ToString("0") + "%\n" + ((int)(movementSpeed*15.0f)).ToString()+" fps";
+#endif
     }
 
     public baseRoom SwitchRoom(string roomName, int node, char facing)

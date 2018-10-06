@@ -414,15 +414,20 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true, int fps=15)
+    protected virtual void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true, int fps=15)
     {
         float speed = ((float)fps) / 15.0f;
         fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="other", callback = callback, fadeInTime=fadeIn, playbackSpeed=speed }, wait);
     }
 
-    protected void QueueMovement(string file, bool wait=true, float speed=1, string tags="")
+    protected virtual void QueueMovement(string file, bool wait=true, float speed=1, string tags="", System.Action<FMVManager.Command> callback=null)
     {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = tags+" movement", playbackSpeed = speed }, wait);
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = tags+" movement", playbackSpeed = speed, callback = callback }, wait);
+    }
+
+    protected virtual void FreezeMovement(string file, float fadeIn=0, System.Action<FMVManager.Command> callback = null)
+    {
+        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = "movement", playbackSpeed = 1, freezeFrame=true, fadeInTime=fadeIn, callback = callback }, true);
     }
 
     protected void PlaySong(string file, bool loop=true)
