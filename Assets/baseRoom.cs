@@ -179,7 +179,7 @@ public class baseRoom : MonoBehaviour {
         CreateNodeConnection(fromPos, toPosArray[0], clickbox, toPosArray);
     }
 
-    protected void CreateNodeConnectionRotations(int from, char[] facings)
+    protected void CreateNodeConnectionRotations(int from, char[] facings, bool only180=false)
     {
         char firstFacing = facings[0];
         char lastFacing = facings[facings.Length - 1];
@@ -205,15 +205,23 @@ public class baseRoom : MonoBehaviour {
             //RoomPosition pos180Left = new RoomPosition(from, f);
             RoomPosition pos180LeftLeft = new RoomPosition(from, b);
 
-            posLeft.filename = "_" + from.ToString() + "b" + posLeft.facing + ".avi";//turning left
-            posRight.filename = "_" + from.ToString() + "f" + posLeft.facing + ".avi";//turning right
-            CreateNodeConnection(posRight, posLeft, left);
-            CreateNodeConnection(posLeft, posRight, right);
+            if (only180)
+            {
+                CreateNodeConnection(posRight, null, left, new RoomPosition[] { posLeft, pos180LeftLeft }, 1);
+                CreateNodeConnection(posRight, null, right, new RoomPosition[] { posLeft, pos180LeftLeft }, 1);
+            }
+            else
+            {
+                posLeft.filename = "_" + from.ToString() + "b" + posLeft.facing + ".avi";//turning left
+                posRight.filename = "_" + from.ToString() + "f" + posLeft.facing + ".avi";//turning right
+                CreateNodeConnection(posRight, posLeft, left);
+                CreateNodeConnection(posLeft, posRight, right);
+            }
 
             //posLeft.filename = "";
             //posRight.filename = "";
             if (iBehind != iNext) CreateNodeConnection(posRight, null, turnaround, new RoomPosition[] { posLeft, pos180LeftLeft }, 2);
-            else CreateNodeConnection(posRight, posLeft, turnaround);
+            else if(only180==false) CreateNodeConnection(posRight, posLeft, turnaround);
         }
         /*RoomPosition fromPos = new RoomPosition(from, firstFacing);
         RoomPosition toPos = new RoomPosition(from, lastFacing);
@@ -221,14 +229,14 @@ public class baseRoom : MonoBehaviour {
         CreateNodeConnection(toPos, fromPos, right);*/
     }
 
-    protected void CreateNodeConnectionRotations(int from, char fromFacing, char toFacing)
+    protected void CreateNodeConnectionRotations(int from, char fromFacing, char toFacing, bool only180 = false)
     {
         //this should probably call the array version, just listing out the facings
         int numFacings = (int)toFacing - (int)fromFacing + 1;
         char[] facings = new char[numFacings];
         int i = 0;
         for (char f = fromFacing; f <= toFacing; i++, f++) facings[i] = f;
-        CreateNodeConnectionRotations(from, facings);
+        CreateNodeConnectionRotations(from, facings, only180);
         return;
 
         /*Rect left = new Rect(-10, 0, 10.02f, 1.0f);
