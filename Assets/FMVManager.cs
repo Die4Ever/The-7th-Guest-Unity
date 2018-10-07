@@ -18,10 +18,12 @@ public class FMVManager : MonoBehaviour
     float puzzleSpeed = 30.0f / 15.0f;//the game is originally 15fps?
     float movementSpeed = 30.0f / 15.0f;//the game is originall 9fps
     float turningSpeed = 30.0f / 15.0f;//the game is originall 9fps
+    float otherSpeed = 4;
 #else
     float puzzleSpeed = 15.0f / 15.0f;//the game is originally 15fps?
     float movementSpeed = 12.0f / 15.0f;//the game is originall 9fps
     float turningSpeed = 12.0f / 15.0f;//the game is originall 9fps
+    float otherSpeed = 1;
 #endif
     float musicVolume = 0.25f;
     float videoVolume = 1.0f;
@@ -142,6 +144,7 @@ public class FMVManager : MonoBehaviour
         if (HasTags(c.tags, "puzzle") && c.freezeFrame == false) c.playbackSpeed *= puzzleSpeed;
         else if (HasTags(c.tags, "turning") && c.freezeFrame == false) c.playbackSpeed *= turningSpeed;
         else if (HasTags(c.tags, "movement") && c.freezeFrame == false) c.playbackSpeed *= movementSpeed;
+        else c.playbackSpeed *= otherSpeed;
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type = CommandType.WAITFORVIDEO });
     }
@@ -153,6 +156,7 @@ public class FMVManager : MonoBehaviour
         if (HasTags(c.tags, "puzzle") && c.freezeFrame == false) c.playbackSpeed *= puzzleSpeed;
         else if (HasTags(c.tags, "turning") && c.freezeFrame == false) c.playbackSpeed *= turningSpeed;
         else if (HasTags(c.tags, "movement") && c.freezeFrame == false) c.playbackSpeed *= movementSpeed;
+        else c.playbackSpeed *= otherSpeed;
         playlist.Add(c);
         if (wait) playlist.Add(new Command { type = CommandType.WAITFOROVERLAY });
     }

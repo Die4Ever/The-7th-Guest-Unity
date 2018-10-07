@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class maze : baseRoom
 {
-    Color multColor = new Color(0.6f, 0.4f, 0.4f, 1);
+    Color multColor = new Color(0.6f, 0.3f, 0.3f, 1);
     // Use this for initialization
     void Start () {
         BaseInit();
@@ -13,6 +13,8 @@ public class maze : baseRoom
         QueueVideo("g_in.avi", fadeIn: 1);
         QueueVideo("g_thru.avi");
         PlaySound("GAMWAV/8_s_11.avi");
+        QueueMovement("s.avi");
+        QueueMovement("s.avi");
         QueueMovement("s.avi");
         QueueVideo("_ghostb.avi");
         QueueMovement("s.avi");

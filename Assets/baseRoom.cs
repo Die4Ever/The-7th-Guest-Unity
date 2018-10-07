@@ -156,7 +156,7 @@ public class baseRoom : MonoBehaviour {
         return new Rect(x-width/2.0f, y-height/2.0f, width, height);
     }
 
-    protected void CreateNodeConnection(RoomPosition fromPos, RoomPosition toPos, Rect clickbox, RoomPosition[] toPosArray=null, float speed=1)
+    protected NodeConnection CreateNodeConnection(RoomPosition fromPos, RoomPosition toPos, Rect clickbox, RoomPosition[] toPosArray=null, float speed=1)
     {
         var nc = new NodeConnection { fromPos=fromPos, clickbox = clickbox, type=ClickboxType.MOVE, speed = speed };
         if(toPosArray != null)
@@ -170,6 +170,7 @@ public class baseRoom : MonoBehaviour {
         if (fromPos.node == nc.toPos[nc.toPos.Length-1].node) nc.type = ClickboxType.TURN;
         nodeConnections.Add( nc );
         MakeClickboxes();
+        return nc;
     }
 
     protected void CreateNodeConnection(int from, int to, Rect clickbox, char fromFacing, char toFacing, char before, char after)
@@ -422,15 +423,17 @@ public class baseRoom : MonoBehaviour {
         MakeClickboxes();
     }
 
-    protected virtual void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true, int fps=15)
+    protected virtual void QueueVideo(string file, System.Action<FMVManager.Command> callback=null, float fadeIn=0, bool wait=true, int fps=15, string fullfilename="")
     {
         float speed = ((float)fps) / 15.0f;
-        fmvman.QueueVideo(new FMVManager.Command { file=myvidpath + file, tags="other", callback = callback, fadeInTime=fadeIn, playbackSpeed=speed }, wait);
+        if (fullfilename == "") fullfilename = myvidpath + file;
+        fmvman.QueueVideo(new FMVManager.Command { file= fullfilename, tags="other", callback = callback, fadeInTime=fadeIn, playbackSpeed=speed }, wait);
     }
 
-    protected virtual void QueueMovement(string file, bool wait=true, float speed=1, string tags="", System.Action<FMVManager.Command> callback=null)
+    protected virtual void QueueMovement(string file, bool wait=true, float speed=1, string tags="", System.Action<FMVManager.Command> callback=null, string fullfilename="")
     {
-        fmvman.QueueVideo(new FMVManager.Command { file = myvidpath + file, tags = tags+" movement", playbackSpeed = speed, callback = callback }, wait);
+        if (fullfilename == "") fullfilename = myvidpath + file;
+        fmvman.QueueVideo(new FMVManager.Command { file = fullfilename, tags = tags+" movement", playbackSpeed = speed, callback = callback }, wait);
     }
 
     protected virtual void FreezeMovement(string file, float fadeIn=0, System.Action<FMVManager.Command> callback = null)
@@ -443,9 +446,9 @@ public class baseRoom : MonoBehaviour {
         fmvman.PlaySong(new FMVManager.Command { file = "../music/"+file+".ogg", type=FMVManager.CommandType.SONG, tags = "room", loop = loop });
     }
 
-    protected void PlaySound(string file)
+    protected void PlaySound(string file, bool wait=false, float countdown=0)
     {
-        fmvman.PlayAudio(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room" }, false);
+        fmvman.PlayAudio(new FMVManager.Command { file = file, type=FMVManager.CommandType.AUDIO, tags = "room", countdown = countdown }, wait);
     }
 
     protected GameObject StartPuzzle(string name, System.Action<string> EndPuzzle)
